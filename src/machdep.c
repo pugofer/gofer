@@ -252,6 +252,9 @@ Void gcCStack() {			/* Garbage collect elements off    */
 #if SMALL_GOFER
     if (((long)(ptr) - (long)(CStackBase))&1)
 	fatal("gcCStack");
+#elif _WIN32
+    if (((uintptr_t)(ptr) - (uintptr_t)(CStackBase))&3)
+	fatal("gcCStack");
 #else 
     if (((long)(ptr) - (long)(CStackBase))&3)
 	fatal("gcCStack");
