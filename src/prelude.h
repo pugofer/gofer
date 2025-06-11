@@ -393,3 +393,19 @@ extern Void     fatal	   Args((String));
 #define DEF_EDITLINE	   "vi +%d %s"		/* if no default editor rqd*/
 
 /*-------------------------------------------------------------------------*/
+
+
+// Rusi 10 June 2025
+
+// Works all modern systems -- I believe!
+#include <sys/stat.h>
+#include <stdint.h>
+#include <string.h>
+#include <signal.h>
+#include <stdlib.h>
+
+#define far
+
+#if UNIX
+#include <unistd.h>
+#endif
