@@ -22,6 +22,13 @@
  * update the source.
  *-------------------------------------------------------------------------*/
 
+
+// The old hand edited mode of choosing OSes is superseded by using
+// predefined compiler macros.
+// As of now thats: __linux__, __WIN32.
+// NETBSD is WIP for MACOS
+
+#if 0
 #define TURBOC   0      /* For IBM PC, using Turbo C 1.5		   */
 #define BCC	 0      /* For IBM PC, using Borland C++ 3.1		   */
 #define WATCOM	 0	/* For IBM PC, using WATCOM C/C++32 v9.5	   */
@@ -44,6 +51,7 @@
 #define ATARI	 0	/* For Atari ST/STE/TT/Falcon w/ Lattice C 5.52 UN */
 #define SGI4	 0	/* For SiliconGraphics Indigo, IRIX v*4*.0.5	UN */
 #define NETBSD	 0	/* For NetBSD-current				   */
+#endif
 
 /*---------------------------------------------------------------------------
  * To add a new machine/compiler, add a new macro line above, add the new
@@ -80,7 +88,7 @@
  *   FIXED_SUBST    to force a fixed size for the current substitution
  *-------------------------------------------------------------------------*/
 
-#define UNIX		(SUNOS  | NEXTSTEP | HPUX | NEXTGCC | LINUX | AMIGA | \
+#define UNIX		(SUNOS  | NEXTSTEP | HPUX | NEXTGCC | __linux__ | AMIGA | \
 			 MINIX68K | ALPHA | OS2 | SVR4 | ULTRIX | AIX | MIPS |\
 			 SGI4 | NETBSD)
 #define SMALL_GOFER	(TURBOC | BCC)
@@ -88,7 +96,7 @@
 #define LARGE_GOFER	(UNIX   | WATCOM)
 #define JMPBUF_ARRAY	(UNIX   | DJGPP | RISCOS | ZTC | ATARI)
 #define DOS_IO		(TURBOC | BCC | DJGPP | ZTC | WATCOM | ATARI)
-#define TERMIO_IO	(LINUX  | HPUX | OS2 | SVR4 | SGI4)
+#define TERMIO_IO	(__linux__  | HPUX | OS2 | SVR4 | SGI4)
 #define SGTTY_IO	(SUNOS  | NEXTSTEP | NEXTGCC | AMIGA | MINIX68K | \
 			 ALPHA  | ULTRIX | AIX | MIPS)
 #define TERMIOS_IO      (NETBSD)
@@ -202,7 +210,7 @@ extern  int  kbhit	Args((void));
 #define	farCalloc(n,s)	(Void *)valloc(((unsigned)n)*((unsigned)s))
 #endif
 
-#if     (HPUX | DJGPP | ZTC | LINUX | ALPHA | OS2 | SVR4 | AIX | SGI4 | NETBSD)
+#if     (HPUX | DJGPP | ZTC | __linux__ | ALPHA | OS2 | SVR4 | AIX | SGI4 | NETBSD)
 #include <stdlib.h>
 #define  far
 #endif
@@ -340,7 +348,7 @@ extern char	*strcpy	   Args((String,String));
 extern char     *strcat	   Args((String,String));
 #endif
 #endif
-#if !LINUX
+#if !__linux__
 extern char	*getenv	   Args((char *));
 extern int      system	   Args((const char *));
 extern double   atof	   Args((char *));
