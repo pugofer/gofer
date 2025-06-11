@@ -1,3 +1,5 @@
+By Mark Jones. From 1994!!
+
     +--------------------------------------------------------------------+
     |                                                                    |
     | This is the Readme file for Gofer version 2.30:  Please read the   |
@@ -15,3 +17,14 @@
     | Enjoy!            Until mid-July 1994:  jones-mark@cs.yale.edu     |
     | Mark              From  Sept/Oct 1994:  mpj@cs.nott.ac.uk          |
     +--------------------------------------------------------------------+
+
+By Rusi
+June 2025
+
+Changes are made to compile it error free in 2025; check the git log to see these
+
+gofc is a harder nut to crack; Only gofer makes nicely as of now.
+
+Tested with gcc on linux; and ming cross-compile for Windows.
+No Apple yet!
+
