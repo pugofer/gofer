@@ -15,14 +15,17 @@
 #include <sys/stat.h>
 #endif
 
-#if (TURBOC | BCC)
+#if (TURBOC | BCC | _WIN32)
 #include <dos.h>
 #include <conio.h>
 #include <io.h>
 #include <stdlib.h>
 #include <mem.h>
-#include <sys\stat.h>
+#include <sys/stat.h>
 #include <time.h>
+#endif
+
+#if (TURBOC | BCC)
 extern unsigned _stklen = 8000;		/* Allocate an 8k stack segment	   */
 #endif
 

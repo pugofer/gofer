@@ -93,9 +93,9 @@
 			 SGI4 | NETBSD)
 #define SMALL_GOFER	(TURBOC | BCC)
 #define REGULAR_GOFER	(RISCOS | DJGPP | ZTC | ATARI)
-#define LARGE_GOFER	(UNIX   | WATCOM)
+#define LARGE_GOFER	(UNIX   | WATCOM | _WIN32)
 #define JMPBUF_ARRAY	(UNIX   | DJGPP | RISCOS | ZTC | ATARI)
-#define DOS_IO		(TURBOC | BCC | DJGPP | ZTC | WATCOM | ATARI)
+#define DOS_IO		(TURBOC | BCC | DJGPP | ZTC | WATCOM | ATARI | _WIN32)
 #define TERMIO_IO	(__linux__  | HPUX | OS2 | SVR4 | SGI4)
 #define SGTTY_IO	(SUNOS  | NEXTSTEP | NEXTGCC | AMIGA | MINIX68K | \
 			 ALPHA  | ULTRIX | AIX | MIPS)
@@ -264,7 +264,7 @@ extern   int namecmp    Args((char *, char *));
 #define MainDone
 #endif
 
-#if (UNIX | DJGPP | RISCOS | ZTC | WATCOM | ATARI)
+#if (UNIX | DJGPP | RISCOS | ZTC | WATCOM | ATARI | _WIN32)
 #define ctrlbrk(bh)	   signal(SIGINT,bh)
 #endif
 
