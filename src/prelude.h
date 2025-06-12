@@ -120,6 +120,23 @@
 #if     __GNUC__ >= 2 && !NEXTSTEP	/* NeXT cc lies and says it's 2.x  */
 #define GCC_THREADED 1
 
+// Rusi 12 June 2025
+
+// Works all modern systems -- I believe!
+#include <sys/stat.h>
+#include <stdint.h>
+#include <string.h>
+#include <signal.h>
+#include <stdlib.h>
+
+#define far
+
+#if UNIX
+#include <unistd.h>
+#endif
+// June 12 2025
+
+
 /* WARNING: if you use the following optimisations to assign registers for
  * particular global variables, you should be very careful to make sure that
  * storage(RESET) is called after a longjump (usually resulting from an error
@@ -354,7 +371,7 @@ extern int      system	   Args((const char *));
 extern double   atof	   Args((char *));
 #endif
 extern char     *strchr    Args((char *,int));  /* test membership in str  */
-extern Void     exit       Args((Int));
+extern Void     exit       Args((int));
 extern Void     internal   Args((String));
 extern Void     fatal	   Args((String));
 
@@ -393,19 +410,3 @@ extern Void     fatal	   Args((String));
 #define DEF_EDITLINE	   "vi +%d %s"		/* if no default editor rqd*/
 
 /*-------------------------------------------------------------------------*/
-
-
-// Rusi 10 June 2025
-
-// Works all modern systems -- I believe!
-#include <sys/stat.h>
-#include <stdint.h>
-#include <string.h>
-#include <signal.h>
-#include <stdlib.h>
-
-#define far
-
-#if UNIX
-#include <unistd.h>
-#endif
