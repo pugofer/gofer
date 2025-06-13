@@ -224,12 +224,6 @@ extern  int  kbhit	Args((void));
 #define sigHandler(nm)	   Void nm(sig_arg) int sig_arg;
 #define sigResume	   return
 #endif
-#ifndef Main			/* to cope with systems that don't like	   */
-#define Main		   Void /* main to be declared as returning Void   */
-#endif
-#ifndef MainDone
-#define MainDone
-#endif
 
 #if (UNIX | _WIN32)
 #define ctrlbrk(bh)	   signal(SIGINT,bh)

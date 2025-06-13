@@ -66,9 +66,9 @@ static Bool listFiles = TRUE;		/* TRUE => list files after loading*/
  * Gofer entry point:
  * ------------------------------------------------------------------------*/
 
-Main main Args((Int, String []));	/* now every func has a prototype  */
+int main Args((Int, String []));	/* now every func has a prototype  */
 
-Main main(argc,argv)
+int main(argc,argv)
 int  argc;
 char *argv[]; {
     CStackBase = &argc;                 /* Save stack base for use in gc   */
@@ -82,8 +82,7 @@ char *argv[]; {
     interpreter(argc,argv);
     printf("[Leaving Gofer]\n");
     everybody(EXIT);
-    exit(0);
-    MainDone
+    return 0;
 }
 
 /* --------------------------------------------------------------------------
