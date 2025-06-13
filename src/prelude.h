@@ -129,8 +129,6 @@
 #include <signal.h>
 #include <stdlib.h>
 
-#define far
-
 #if UNIX
 #include <unistd.h>
 #endif
