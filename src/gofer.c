@@ -31,26 +31,26 @@
  * Local function prototypes:
  * ------------------------------------------------------------------------*/
 
-static Void   local initialise	      Args((Int,String []));
-static Void   local interpreter       Args((Int,String []));
-static Void   local menu	      Args((Void));
-static Void   local guidance	      Args((Void));
-static Void   local forHelp	      Args((Void));
-static Void   local set		      Args((Void));
-static Void   local changeDir	      Args((Void));
-static Void   local load	      Args((Void));
-static Void   local project           Args((Void));
-static Void   local readScripts       Args((Int));
-static Void   local whatFiles	      Args((Void));
-static Void   local editor	      Args((Void));
-static Void   local find	      Args((Void));
-static Void   local runEditor         Args((Void));
-static Void   local evaluator	      Args((Void));
-static Void   local stopAnyPrinting   Args((Void));
-static Void   local showtype	      Args((Void));
-static Void   local info	      Args((Void));
-static Void   local describe	      Args((Text));
-static Void   local listNames	      Args((Void));
+static void   local initialise	      Args((Int,String []));
+static void   local interpreter       Args((Int,String []));
+static void   local menu	      Args((void));
+static void   local guidance	      Args((void));
+static void   local forHelp	      Args((void));
+static void   local set		      Args((void));
+static void   local changeDir	      Args((void));
+static void   local load	      Args((void));
+static void   local project           Args((void));
+static void   local readScripts       Args((Int));
+static void   local whatFiles	      Args((void));
+static void   local editor	      Args((void));
+static void   local find	      Args((void));
+static void   local runEditor         Args((void));
+static void   local evaluator	      Args((void));
+static void   local stopAnyPrinting   Args((void));
+static void   local showtype	      Args((void));
+static void   local info	      Args((void));
+static void   local describe	      Args((Text));
+static void   local listNames	      Args((void));
 
 /* --------------------------------------------------------------------------
  * Local data areas:
@@ -89,7 +89,7 @@ char *argv[]; {
  * Initialisation, interpret command line args and read prelude:
  * ------------------------------------------------------------------------*/
 
-static Void local initialise(argc,argv)/* interpreter initialisation	   */
+static void local initialise(argc,argv)/* interpreter initialisation	   */
 Int    argc;
 String argv[]; {
     Module i;
@@ -139,7 +139,7 @@ static struct cmd cmds[] = {
  {0,0}
 };
 
-static Void local menu() {
+static void local menu() {
     printf("LIST OF COMMANDS:  Any command may be abbreviated to :c where\n");
     printf("c is the first character in the full name.\n\n");
     printf(":load <filenames>   load scripts from specified files\n");
@@ -163,12 +163,12 @@ static Void local menu() {
     printf(":quit               exit Gofer interpreter\n");
 }
 
-static Void local guidance() {
+static void local guidance() {
     printf("Command not recognised.  ");
     forHelp();
 }
 
-static Void local forHelp() {
+static void local forHelp() {
     printf("Type :? for help\n");
 }
 
@@ -199,7 +199,7 @@ struct options toggle[] = {		/* List of command line toggles	   */
     {0,   0,					   0}
 };
 
-static Void local set() {		/* change command line options from*/
+static void local set() {		/* change command line options from*/
     String s;				/* Gofer command line		   */
 
     if (s=readFilename()) {
@@ -220,7 +220,7 @@ static Void local set() {		/* change command line options from*/
  * Change directory command:
  * ------------------------------------------------------------------------*/
 
-static Void local changeDir() {		/* change directory		   */
+static void local changeDir() {		/* change directory		   */
     extern int chdir Args((String));
     String s = readFilename();
     if (s && chdir(s)) {
@@ -233,7 +233,7 @@ static Void local changeDir() {		/* change directory		   */
  * Loading and removal of script files:
  * ------------------------------------------------------------------------*/
 
-static Void local load() {	       /* read filenames from command line */
+static void local load() {	       /* read filenames from command line */
     String s;			       /* and add to list of files waiting */
 				       /* to be read			   */
     while (s=readFilename())
@@ -241,7 +241,7 @@ static Void local load() {	       /* read filenames from command line */
     readScripts(1);
 }
 
-static Void local project() {	       /* read list of file names from     */
+static void local project() {	       /* read list of file names from     */
     String s;			       /* project file			   */
 
     if ((s=readFilename()) || currProject) {
@@ -262,7 +262,7 @@ static Void local project() {	       /* read list of file names from     */
     readScripts(1);
 }
 
-static Void local readScripts(first)	/* reread current list of scripts, */
+static void local readScripts(first)	/* reread current list of scripts, */
 Int first; {				/* loading everything after and	   */
     Module i;				/* including the first script which*/
     Time   timeStamp;			/* has been either changed or added*/
@@ -291,7 +291,7 @@ Int first; {				/* loading everything after and	   */
 	setLastEdit((String)0, 0);
 }
 
-static Void local whatFiles() {		/* list files in current session   */
+static void local whatFiles() {		/* list files in current session   */
     int i;
     printf("\nGofer session for:");
     if (projectLoaded)
@@ -305,7 +305,7 @@ static Void local whatFiles() {		/* list files in current session   */
  * Access to external editor:
  * ------------------------------------------------------------------------*/
 
-static Void local editor() {		/* interpreter-editor interface	   */
+static void local editor() {		/* interpreter-editor interface	   */
     String newFile  = readFilename();
     if (newFile) {
 	setLastEdit(newFile,0);
@@ -318,7 +318,7 @@ static Void local editor() {		/* interpreter-editor interface	   */
     readScripts(1);			/* try to reload scripts after edit*/
 }
 
-static Void local find() {		/* edit file containing definition */
+static void local find() {		/* edit file containing definition */
     String nm = readFilename();		/* of specified name		   */
     if (!nm) {
 	ERROR(0) "No name specified"
@@ -341,7 +341,7 @@ static Void local find() {		/* edit file containing definition */
     }
 }
 
-static Void local runEditor() {		/* run editor on file lastEdit at  */
+static void local runEditor() {		/* run editor on file lastEdit at  */
     static char editorCmd[100];		/* line editLine		   */
     String edt;
     Int    l,f;
@@ -374,7 +374,7 @@ static Void local runEditor() {		/* run editor on file lastEdit at  */
  * Read and evaluate an expression:
  * ------------------------------------------------------------------------*/
 
-static Void local evaluator() {        /* evaluate expr and print value    */
+static void local evaluator() {        /* evaluate expr and print value    */
     Type type;
 
     scriptFile = 0;
@@ -426,7 +426,7 @@ static Void local evaluator() {        /* evaluate expr and print value    */
     stopAnyPrinting();
 }
 
-static Void local stopAnyPrinting() {  /* terminate printing of expression,*/
+static void local stopAnyPrinting() {  /* terminate printing of expression,*/
     if (printing) {		       /* after successful termination or  */
 	printing = FALSE;	       /* runtime error (e.g. interrupt)   */
 	putchar('\n');
@@ -447,7 +447,7 @@ static Void local stopAnyPrinting() {  /* terminate printing of expression,*/
  * Print type of input expression:
  * ------------------------------------------------------------------------*/
 
-static Void local showtype() {	       /* print type of expression (if any)*/
+static void local showtype() {	       /* print type of expression (if any)*/
     Cell type;
 
     startNewModule();		       /* Enables recovery of storage	   */
@@ -466,7 +466,7 @@ static Void local showtype() {	       /* print type of expression (if any)*/
  * about an object.
  * ------------------------------------------------------------------------*/
 
-static Void local info() {		/* describe objects		   */
+static void local info() {		/* describe objects		   */
     Int    count = 0;			/* or give menu of commands	   */
     String s;
 
@@ -477,7 +477,7 @@ static Void local info() {		/* describe objects		   */
 	whatFiles();
 }
 
-static Void local describe(t)		/* describe an object		   */
+static void local describe(t)		/* describe an object		   */
 Text t; {
     Tycon tc = findTycon(t);
     Class cl = findClass(t);
@@ -594,7 +594,7 @@ Text t; {
  * List all names currently in scope:
  * ------------------------------------------------------------------------*/
 
-static Void local listNames() {		/* list names matching optional pat*/
+static void local listNames() {		/* list names matching optional pat*/
     String pat   = readFilename();
     List   names = NIL;
     Int    width = getTerminalWidth() - 1;
@@ -640,7 +640,7 @@ static jmp_buf catch_error;	       /* jump buffer for error trapping   */
 #include "timer.c"
 #endif
 
-static Void local interpreter(argc,argv)/* main interpreter loop	   */
+static void local interpreter(argc,argv)/* main interpreter loop	   */
 Int    argc;
 String argv[]; {
     Int errorNumber = setjmp(catch_error);
@@ -711,7 +711,7 @@ String argv[]; {
     }
 }
 
-Void errHead(l) 		       /* print start of error message	   */
+void errHead(l) 		       /* print start of error message	   */
 Int l; {
     failed();			       /* failed to reach target ...	   */
     stopAnyPrinting();
@@ -727,19 +727,19 @@ Int l; {
     fflush(errorStream);
 }
 
-Void errFail() {			/* terminate error message and	   */
+void errFail() {			/* terminate error message and	   */
     putc('\n',errorStream);		/* produce exception to return to  */
     fflush(errorStream);		/* main command loop		   */
     longjmp(catch_error,1);
 }
 
-Void errAbort() {			/* altern. form of error handling  */
+void errAbort() {			/* altern. form of error handling  */
     failed();				/* used when suitable error message*/
     stopAnyPrinting();			/* has already been printed	   */
     errFail();
 }
 
-Void internal(msg)			/* handle internal error 	   */
+void internal(msg)			/* handle internal error 	   */
 String msg; {
     failed();
     stopAnyPrinting();
@@ -748,7 +748,7 @@ String msg; {
     longjmp(catch_error,1);
 }
 
-Void fatal(msg)				/* handle fatal error		   */
+void fatal(msg)				/* handle fatal error		   */
 String msg; {
     fflush(stdout);
     printf("\nFATAL ERROR: %s\n",msg);

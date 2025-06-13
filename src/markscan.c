@@ -20,11 +20,11 @@
  * fact that any cell may now be relocated during garbage collection.
  * ------------------------------------------------------------------------*/
 
-static Void   heapInit		Args((Void));
-static Void   markPhase		Args((Void));
-static Void   scanPhase		Args((Void));
+static void   heapInit		Args((void));
+static void   markPhase		Args((void));
+static void   scanPhase		Args((void));
 static Cell   markCell		Args((Cell));
-static Void   markSnd		Args((Cell));
+static void   markSnd		Args((Cell));
 
 Int     heapSize = DEFAULTHEAP;		/* number of cells in heap	   */
 #ifndef GLOBALfst
@@ -39,7 +39,7 @@ static  Int *marks;			/* `Mark set' used during GC to	   */
 static  Int marksSize;			/* flag visited (active) cells	   */
 #define mark(c)  c=markCell(c)		/* mark graph and save new pointer */
 
-static Void heapInit() {		/* initialise heap storage	   */
+static void heapInit() {		/* initialise heap storage	   */
     Int i;
 
     heapFst = (Heap)(farCalloc(heapSize,sizeof(Cell)));
@@ -74,12 +74,12 @@ Cell l, r; {				/* heap, garbage collecting first  */
     return c;
 }
 
-Void garbageCollect() {			/* garbage collector		   */
+void garbageCollect() {			/* garbage collector		   */
     markPhase();
     scanPhase();
 }
 
-static Void markPhase() {		/* mark phase of garbage collector */
+static void markPhase() {		/* mark phase of garbage collector */
     StackPtr sp1;
     Int	     i;
 
@@ -97,7 +97,7 @@ static Void markPhase() {		/* mark phase of garbage collector */
     primMark();				/* mark primitives		   */
 }
 
-static Void scanPhase() {		/* scan phase of garbage collector */
+static void scanPhase() {		/* scan phase of garbage collector */
     register Int mask  = 1;		/* scan heap and add unused cells  */
     register Int place = 0;		/* to the freeList		   */
     Int      recovered = 0;
@@ -155,7 +155,7 @@ mc: if (!isPair(c))
     return c;
 }
 
-static Void markSnd(c)			/* Variant of markCell used to     */
+static void markSnd(c)			/* Variant of markCell used to     */
 Cell c; {				/* update snd component of cell    */
     Cell t;				/* using tail recursion		   */
 
@@ -191,7 +191,7 @@ mb: if (!isPair(t))
  * ------------------------------------------------------------------------*/
 
 #if HASKELL_ARRAYS
-Void allocArray(n,bds,z)                /* allocate array of cells         */
+void allocArray(n,bds,z)                /* allocate array of cells         */
 Int  n;                                 /* n = length of array (assume>=0) */
 Cell bds;                               /* bds = bounds                    */
 Cell z; {                               /* z = default value               */
@@ -205,7 +205,7 @@ Cell z; {                               /* z = default value               */
     topfun(ARRAY);
 }
 
-Void dupArray(a)                        /* duplicate array                 */
+void dupArray(a)                        /* duplicate array                 */
 Cell a; {
     for (onto(cfunNil); isPair(a); a=snd(a))
 	topfun(fst(a));

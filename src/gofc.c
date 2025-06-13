@@ -39,9 +39,9 @@ static  Fp   gofcFp  = 0;		/* for output to file		  */
  * Local function prototypes:
  * ------------------------------------------------------------------------*/
 
-static Void local loadCompile	Args((Void));
+static void local loadCompile	Args((void));
 static Fp   local initOutput	Args((String));
-static Void local initialise	Args((Int,String []));
+static void local initialise	Args((Int,String []));
 
 /* --------------------------------------------------------------------------
  * Gofer entry point:
@@ -72,7 +72,7 @@ char *argv[]; {
 	fclose(gofcFp);
     }
     else {				/* produce C code as output	   */
-	extern Void outputCode Args((FILE *,Name,String));
+	extern void outputCode Args((FILE *,Name,String));
 	Name mn;
         String topLevel = 0;
 	loadCompile();
@@ -131,7 +131,7 @@ char *argv[]; {
     MainDone
 }
 
-static Void local loadCompile() {	/* load and compile source modules */
+static void local loadCompile() {	/* load and compile source modules */
     Module i;
     Time   timeStamp;
     Long   fileSize;
@@ -259,7 +259,7 @@ struct options toggle[] = {
     {0,   0,					   0}
 };
 
-static Void local initialise(argc,argv)/* compiler initialisation	   */
+static void local initialise(argc,argv)/* compiler initialisation	   */
 Int    argc;
 String argv[]; {
     Module i;
@@ -290,7 +290,7 @@ String argv[]; {
     }
 }
 
-Void errHead(l) 		       /* print start of error message	   */
+void errHead(l) 		       /* print start of error message	   */
 Int l; {
     failed();			       /* failed to reach target ...	   */
     fprintf(errorStream,"ERROR");
@@ -303,23 +303,23 @@ Int l; {
     fflush(errorStream);
 }
 
-Void errFail() {		       /* terminate error message	   */
+void errFail() {		       /* terminate error message	   */
     fprintf(errorStream,"\nAborting compilation\n");
     fflush(errorStream);
     exit(1);
 }
 
-Void errAbort() {			/* altern. form of error handling  */
+void errAbort() {			/* altern. form of error handling  */
     failed();				/* used when suitable error message*/
     errFail();
 }
 
-Void internal(msg)			/* handle internal error	   */
+void internal(msg)			/* handle internal error	   */
 String msg; {
     fatal(msg);				/* treat as fatal condition	   */
 }
 
-Void fatal(msg)				/* handle fatal error	 	   */
+void fatal(msg)				/* handle fatal error	 	   */
 String msg; {
     fflush(stdout);
     printf("\nINTERNAL ERROR: %s\n",msg);

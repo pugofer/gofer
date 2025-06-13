@@ -15,13 +15,13 @@
  * local function prototypes:
  * ------------------------------------------------------------------------*/
 
-static Void  local checkTyconDefn	Args((Tycon));
+static void  local checkTyconDefn	Args((Tycon));
 static Type  local depTypeExp		Args((Int,List,Type));
-static Void  local depConstr		Args((Int,List,Cell));
-static Void  local addConstrs		Args((Tycon));
+static void  local depConstr		Args((Int,List,Cell));
+static void  local addConstrs		Args((Tycon));
 static Name  local newConstr		Args((Tycon,Int,List,Type,Cell));
 static List  local selectCtxt		Args((List,List));
-static Void  local checkSynonyms	Args((List));
+static void  local checkSynonyms	Args((List));
 static List  local visitSyn		Args((List,Tycon,List));
 
 static Type  local fullExpand		Args((Type));
@@ -35,72 +35,72 @@ static List  local offsetTyvarsIn	Args((Type,List));
 
 static Type  local checkSigType		Args((Int,String,Cell,Type));
 
-static Void  local checkClassDefn	Args((Class));
-static Void  local depPredExp		Args((Int,List,Cell));
-static Void  local checkMems		Args((Class,List,Cell));
-static Void  local addMembers		Args((Class));
+static void  local checkClassDefn	Args((Class));
+static void  local depPredExp		Args((Int,List,Cell));
+static void  local checkMems		Args((Class,List,Cell));
+static void  local addMembers		Args((Class));
 static Name  local newMember		Args((Int,Int,Cell,Type));
 
-static Void  local checkInstDefn        Args((Inst));
+static void  local checkInstDefn        Args((Inst));
 
 static List  local classBindings        Args((String,Class,List));
 static Int   local memberNumber         Args((Class,Text));
 static List  local numInsert            Args((Int,Cell,List));
 
-static Void  local checkPrimDefn	Args((Triple));
-static Void  local addNewPrim		Args((Int,Text,String,Cell));
+static void  local checkPrimDefn	Args((Triple));
+static void  local addNewPrim		Args((Int,Text,String,Cell));
 
 static Cell  local checkPat		Args((Int,Cell));
 static Cell  local checkMaybeCnkPat	Args((Int,Cell));
 static Cell  local checkApPat		Args((Int,Int,Cell));
-static Void  local addPatVar		Args((Int,Cell));
+static void  local addPatVar		Args((Int,Cell));
 static Name  local conDefined		Args((Int,Text));
-static Void  local checkIsCfun		Args((Int,Cell));
-static Void  local checkCfunArgs	Args((Int,Cell,Int));
+static void  local checkIsCfun		Args((Int,Cell));
+static void  local checkCfunArgs	Args((Int,Cell,Int));
 
 static Cell  local bindPat		Args((Int,Cell));
-static Void  local bindPats		Args((Int,List));
+static void  local bindPats		Args((Int,List));
 
 static List  local extractSigdecls	Args((List));
 static List  local extractBindings	Args((List));
 static List  local eqnsToBindings	Args((List));
-static Void  local notDefined		Args((Int,List,Cell));
+static void  local notDefined		Args((Int,List,Cell));
 static Cell  local findBinding		Args((Text,List));
-static Void  local addSigDecl		Args((List,Cell));
-static Void  local setType		Args((Int,Cell,Cell,List));
+static void  local addSigDecl		Args((List,Cell));
+static void  local setType		Args((Int,Cell,Cell,List));
 
 static List  local dependencyAnal	Args((List));
 static List  local topDependAnal	Args((List));
-static Void  local addDepField		Args((Cell));
-static Void  local remDepField		Args((List));
-static Void  local remDepField1		Args((Cell));
-static Void  local clearScope		Args((Void));
-static Void  local withinScope		Args((List));
-static Void  local leaveScope		Args((Void));
+static void  local addDepField		Args((Cell));
+static void  local remDepField		Args((List));
+static void  local remDepField1		Args((Cell));
+static void  local clearScope		Args((void));
+static void  local withinScope		Args((List));
+static void  local leaveScope		Args((void));
 
-static Void  local depBinding		Args((Cell));
-static Void  local depDefaults          Args((Class));
-static Void  local depInsts             Args((Inst));
-static Void  local depClassBindings     Args((List));
-static Void  local depAlt		Args((Cell));
-static Void  local depRhs		Args((Cell));
-static Void  local depGuard		Args((Cell));
+static void  local depBinding		Args((Cell));
+static void  local depDefaults          Args((Class));
+static void  local depInsts             Args((Inst));
+static void  local depClassBindings     Args((List));
+static void  local depAlt		Args((Cell));
+static void  local depRhs		Args((Cell));
+static void  local depGuard		Args((Cell));
 static Cell  local depExpr		Args((Int,Cell));
-static Void  local depPair		Args((Int,Cell));
-static Void  local depTriple		Args((Int,Cell));
-static Void  local depComp		Args((Int,Cell,List));
-static Void  local depCaseAlt		Args((Int,Cell));
+static void  local depPair		Args((Int,Cell));
+static void  local depTriple		Args((Int,Cell));
+static void  local depComp		Args((Int,Cell,List));
+static void  local depCaseAlt		Args((Int,Cell));
 static Cell  local depVar		Args((Int,Cell));
 
 static Int   local sccMin		Args((Int,Int));
 static List  local tcscc		Args((List,List));
 static List  local bscc			Args((List));
 
-static Void  local addRSsigdecls	Args((Pair));
-static Void  local opDefined		Args((List,Cell));
-static Void  local allNoPrevDef		Args((Cell));
-static Void  local noPrevDef		Args((Int,Cell));
-static Void  local checkTypeIn		Args((Pair));
+static void  local addRSsigdecls	Args((Pair));
+static void  local opDefined		Args((List,Cell));
+static void  local allNoPrevDef		Args((Cell));
+static void  local noPrevDef		Args((Int,Cell));
+static void  local checkTypeIn		Args((Pair));
 
 /* --------------------------------------------------------------------------
  * Static analysis of type declarations:
@@ -119,7 +119,7 @@ static Void  local checkTypeIn		Args((Pair));
  * - Build separate lists of newly defined constructors for later use.
  * ------------------------------------------------------------------------*/
 
-Void tyconDefn(line,lhs,rhs,what)	/* process new type definition	   */
+void tyconDefn(line,lhs,rhs,what)	/* process new type definition	   */
 Int  line;				/* definition line number	   */
 Cell lhs;				/* left hand side of definition	   */
 Cell rhs;				/* right hand side of definition   */
@@ -152,7 +152,7 @@ Cell what; {				/* SYNONYM/DATATYPE/etc...	   */
     }
 }
 
-Void setTypeIns(bs)			/* set local synonyms for given	   */
+void setTypeIns(bs)			/* set local synonyms for given	   */
 List bs; {				/* binding group		   */
     List cvs = typeInDefns;
     for (; nonNull(cvs); cvs=tl(cvs)) {
@@ -167,7 +167,7 @@ List bs; {				/* binding group		   */
     }
 }
 
-Void clearTypeIns() {			/* clear list of local synonyms	   */
+void clearTypeIns() {			/* clear list of local synonyms	   */
     for (; nonNull(typeInDefns); typeInDefns=tl(typeInDefns))
 	tycon(fst(hd(typeInDefns))).what = RESTRICTSYN;
 }
@@ -198,7 +198,7 @@ Void clearTypeIns() {			/* clear list of local synonyms	   */
 
 static List tcDeps = NIL;		/* list of dependent tycons/classes*/
 
-static Void local checkTyconDefn(d)	/* validate type constructor defn  */
+static void local checkTyconDefn(d)	/* validate type constructor defn  */
 Tycon d; {
     Cell lhs    = fst(tycon(d).defn);
     Cell rhs    = snd(tycon(d).defn);
@@ -286,7 +286,7 @@ Type type; {
     return type;
 }
 
-static Void local depConstr(line,tyvars,constr)
+static void local depConstr(line,tyvars,constr)
 Int  line;
 List tyvars;
 Cell constr; {
@@ -294,7 +294,7 @@ Cell constr; {
 	arg(constr) = depTypeExp(line,tyvars,arg(constr));
 }
 
-static Void local addConstrs(t)		/* Add definitions of constructor  */
+static void local addConstrs(t)		/* Add definitions of constructor  */
 Tycon t; {
     if (tycon(t).what==DATATYPE) {
 	Type lhs      = t;
@@ -377,7 +377,7 @@ List vs; {
     }
 }
 
-static Void local checkSynonyms(ts)	/* check for mutually recursive	   */
+static void local checkSynonyms(ts)	/* check for mutually recursive	   */
 List ts; {				/* synonyms in list of tycons ts   */
     List syns = NIL;
     for (; nonNull(ts); ts=tl(ts))	/* build list of all synonyms	   */
@@ -540,7 +540,7 @@ Type type; {				/* ambiguous 			   */
     return FALSE;
 }
 
-Void ambigError(line,where,e,type)	/* produce error message for	   */
+void ambigError(line,where,e,type)	/* produce error message for	   */
 Int    line;				/* ambiguity			   */
 String where;
 Cell   e;
@@ -609,7 +609,7 @@ Type   type; {
  *   stages of static analysis.
  * ------------------------------------------------------------------------*/
 
-Void classDefn(line,head,ms)	       /* process new class definition	   */
+void classDefn(line,head,ms)	       /* process new class definition	   */
 Int  line;			       /* definition line number	   */
 Cell head;			       /* class header :: ([Supers],Class) */
 List ms; {			       /* class definition body		   */
@@ -665,7 +665,7 @@ List ms; {			       /* class definition body		   */
  * - only function bindings appear in defaults
  * ------------------------------------------------------------------------*/
 
-static Void local checkClassDefn(c)    /* validate class definition	   */
+static void local checkClassDefn(c)    /* validate class definition	   */
 Class c; {
     List tyvars = NIL;
     Int  args   = 0;
@@ -705,7 +705,7 @@ Class c; {
     tcDeps             = NIL;
 }
 
-static Void local depPredExp(line,tyvars,pred)
+static void local depPredExp(line,tyvars,pred)
 Int  line;
 List tyvars;
 Cell pred; {
@@ -737,7 +737,7 @@ Cell pred; {
 	tcDeps = cons(c,tcDeps);
 }
 
-static Void local checkMems(c,tyvars,m)	/* check member function details   */
+static void local checkMems(c,tyvars,m)	/* check member function details   */
 Class c;
 List  tyvars;
 Cell  m; {
@@ -762,7 +762,7 @@ Cell  m; {
     tyvars   = take(class(c).arity,tyvars);	/* delete extra type vars  */
 }
 
-static Void local addMembers(c)		/* Add definitions of member funs  */
+static void local addMembers(c)		/* Add definitions of member funs  */
 Class c; {
     Int  mno   = 1;			/* member function number	   */
     List mfuns = NIL;			/* list of member functions	   */
@@ -815,7 +815,7 @@ Type t; {
  *   stages of static analysis.
  * ------------------------------------------------------------------------*/
 
-Void instDefn(line,head,ms)	       /* process new instance definition  */
+void instDefn(line,head,ms)	       /* process new instance definition  */
 Int  line;			       /* definition line number	   */
 Cell head;			       /* inst header :: (context,Class)   */
 List ms; {			       /* instance members		   */
@@ -842,7 +842,7 @@ List ms; {			       /* instance members		   */
  * - No top level type signature declarations
  * ------------------------------------------------------------------------*/
 
-static Void local checkInstDefn(in)    /* validate instance declaration    */
+static void local checkInstDefn(in)    /* validate instance declaration    */
 Inst in; {
     Int  line   = inst(in).line;
     List tyvars = typeVarsIn(inst(in).head,NIL);
@@ -931,14 +931,14 @@ List xs; {
  * name with a string (which identifies a built-in primitive) and a type.
  * ------------------------------------------------------------------------*/
 
-Void primDefn(line,prims,type)		/* Handle primitive definitions	   */
+void primDefn(line,prims,type)		/* Handle primitive definitions	   */
 Cell line;
 List prims;
 Cell type; {
     primDefns = cons(triple(line,prims,type),primDefns);
 }
 
-static Void local checkPrimDefn(p)	/* Check primitive definition	   */
+static void local checkPrimDefn(p)	/* Check primitive definition	   */
 Triple p; {
     Int  line  = intOf(fst3(p));
     List prims = snd3(p);
@@ -951,7 +951,7 @@ Triple p; {
 		   type);
 }
 
-static Void local addNewPrim(l,vn,s,t)	/* make binding of variable vn to  */
+static void local addNewPrim(l,vn,s,t)	/* make binding of variable vn to  */
 Int    l;				/* primitive function referred	   */
 Text   vn;				/* to by s, with given type t	   */
 String s;
@@ -1098,7 +1098,7 @@ Cell p; {
     return p;
 }
 
-static Void local addPatVar(line,v)    /* add variable v to list of vars   */
+static void local addPatVar(line,v)    /* add variable v to list of vars   */
 Int  line;			       /* in current pattern, checking for */
 Cell v; {			       /* repeated variables.		   */
      Text t = textOf(v);
@@ -1130,7 +1130,7 @@ Text t; {			       /* function.			   */
     return c;
 }
 
-static Void local checkIsCfun(line,c)  /* Check that c is a constructor fn */
+static void local checkIsCfun(line,c)  /* Check that c is a constructor fn */
 Int  line;
 Cell c; {
     if (name(c).defn!=CFUN) {
@@ -1140,7 +1140,7 @@ Cell c; {
     }
 }
 
-static Void local checkCfunArgs(line,c,args)
+static void local checkCfunArgs(line,c,args)
 Int  line;			       /* Check constructor applied with   */
 Cell c; 			       /* correct number of arguments	   */
 Int  args; {
@@ -1172,7 +1172,7 @@ Cell p; {
     return p;
 }
 
-static Void local bindPats(line,ps)    /* add new bound vars for patterns  */
+static void local bindPats(line,ps)    /* add new bound vars for patterns  */
 Int  line;
 List ps; {
     patVars    = NIL;
@@ -1304,7 +1304,7 @@ List es; {			       /* of typed bindings		   */
     return bs;
 }
 
-static Void local notDefined(line,bs,v)/* check if name already defined in */
+static void local notDefined(line,bs,v)/* check if name already defined in */
 Int  line;			       /* list of bindings		   */
 List bs;
 Cell v; {
@@ -1327,7 +1327,7 @@ List bs; {
     return NIL;
 }
 
-static Void local addSigDecl(bs,sigDecl)/* add type information to bindings*/
+static void local addSigDecl(bs,sigDecl)/* add type information to bindings*/
 List bs;			       /* :: [Binding]			   */
 Cell sigDecl; { 		       /* :: (Line,[Var],Type)		   */
     Int  line = intOf(fst3(sigDecl));
@@ -1337,7 +1337,7 @@ Cell sigDecl; { 		       /* :: (Line,[Var],Type)		   */
     map3Proc(setType,line,type,bs,vs);
 }
 
-static Void local setType(line,type,bs,v)
+static void local setType(line,type,bs,v)
 Int  line;			       /* Set type of variable		   */
 Cell type;
 Cell v;
@@ -1427,35 +1427,35 @@ List bs; {			       /* top level, reporting on progress */
     return bs;
 }
 
-static Void local addDepField(b)       /* add extra field to binding to    */
+static void local addDepField(b)       /* add extra field to binding to    */
 Cell b; {			       /* hold list of dependents	   */
     snd(b) = pair(NIL,snd(b));
 }
 
-static Void local remDepField(bs)      /* remove dependency field from	   */
+static void local remDepField(bs)      /* remove dependency field from	   */
 List bs; {			       /* list of bindings		   */
     mapProc(remDepField1,bs);
 }
 
-static Void local remDepField1(b)      /* remove dependency field from	   */
+static void local remDepField1(b)      /* remove dependency field from	   */
 Cell b; {			       /* single binding		   */
     snd(b) = snd(snd(b));
 }
 
-static Void local clearScope() {       /* initialise dependency scoping    */
+static void local clearScope() {       /* initialise dependency scoping    */
     bounds   = NIL;
     bindings = NIL;
     depends  = NIL;
 }
 
-static Void local withinScope(bs)      /* enter scope of bindings bs	   */
+static void local withinScope(bs)      /* enter scope of bindings bs	   */
 List bs; {
     bounds   = cons(NIL,bounds);
     bindings = cons(bs,bindings);
     depends  = cons(NIL,depends);
 }
 
-static Void local leaveScope() {       /* leave scope of last withinScope  */
+static void local leaveScope() {       /* leave scope of last withinScope  */
     bounds   = tl(bounds);
     bindings = tl(bindings);
     depends  = tl(depends);
@@ -1475,7 +1475,7 @@ static Void local leaveScope() {       /* leave scope of last withinScope  */
  * - No free (i.e. unbound) variables are used in the declaration list.
  * ------------------------------------------------------------------------*/
 
-static Void local depBinding(b)        /* find dependents of binding	   */
+static void local depBinding(b)        /* find dependents of binding	   */
 Cell b; {
     Cell defpart = snd(snd(snd(b)));   /* definition part of binding	   */
 
@@ -1491,24 +1491,24 @@ Cell b; {
     depVal(b) = hd(depends);
 }
 
-static Void local depDefaults(c)       /* dependency analysis on defaults  */
+static void local depDefaults(c)       /* dependency analysis on defaults  */
 Class c; {                             /* from class definition            */
     depClassBindings(class(c).defaults);
 }
 
-static Void local depInsts(in)         /* dependency analysis on instance  */
+static void local depInsts(in)         /* dependency analysis on instance  */
 Inst in; {                             /* bindings                         */
     depClassBindings(inst(in).implements);
 }
 
-static Void local depClassBindings(bs) /* dependency analysis on list of   */
+static void local depClassBindings(bs) /* dependency analysis on list of   */
 List bs; {                             /* bindings, possibly containing    */
     for (; nonNull(bs); bs=tl(bs))     /* NIL bindings ...                 */
         if (nonNull(hd(bs)))           /* No need to add extra field for   */
             mapProc(depAlt,name(hd(bs)).defn); /* dependency information.. */
 }
 
-static Void local depAlt(a)	       /* find dependents of alternative   */
+static void local depAlt(a)	       /* find dependents of alternative   */
 Cell a; {
     List origBvars = saveBvars();      /* save list of bound variables	   */
     bindPats(rhsLine(snd(a)),fst(a));  /* add new bound vars for patterns  */
@@ -1516,7 +1516,7 @@ Cell a; {
     restoreBvars(origBvars);	       /* restore original list of bvars   */
 }
 
-static Void local depRhs(r)	       /* find dependents of rhs	   */
+static void local depRhs(r)	       /* find dependents of rhs	   */
 Cell r; {
     switch (whatIs(r)) {
 	case GUARDED : mapProc(depGuard,snd(r));
@@ -1535,7 +1535,7 @@ Cell r; {
     }
 }
 
-static Void local depGuard(g)	       /* find dependents of single guarded*/
+static void local depGuard(g)	       /* find dependents of single guarded*/
 Cell g; {			       /* expression			   */
     depPair(intOf(fst(g)),snd(g));
 }
@@ -1613,14 +1613,14 @@ Cell e; {
    return e;
 }
 
-static Void local depPair(line,e)	/* find dependents of pair of exprs*/
+static void local depPair(line,e)	/* find dependents of pair of exprs*/
 Int  line;
 Cell e; {
     fst(e) = depExpr(line,fst(e));
     snd(e) = depExpr(line,snd(e));
 }
 
-static Void local depTriple(line,e)	/* find dependents of triple exprs */
+static void local depTriple(line,e)	/* find dependents of triple exprs */
 Int  line;
 Cell e; {
     fst3(e) = depExpr(line,fst3(e));
@@ -1628,7 +1628,7 @@ Cell e; {
     thd3(e) = depExpr(line,thd3(e));
 }
 
-static Void local depComp(l,e,qs)	/* find dependents of comprehension*/
+static void local depComp(l,e,qs)	/* find dependents of comprehension*/
 Int  l;
 Cell e;
 List qs; {
@@ -1662,7 +1662,7 @@ List qs; {
     }
 }
 
-static Void local depCaseAlt(line,a)	/* find dependents of case altern. */
+static void local depCaseAlt(line,a)	/* find dependents of case altern. */
 Int  line;
 Cell a; {
     List origBvars = saveBvars();	/* save list of bound variables	   */
@@ -1748,7 +1748,7 @@ Int x,y; {			       /* y is zero)			   */
  * Main static analysis:
  * ------------------------------------------------------------------------*/
 
-Void checkExp() {			/* Top level static check on Expr  */
+void checkExp() {			/* Top level static check on Expr  */
     staticAnalysis(RESET);
     clearScope();			/* Analyse expression in the scope */
     withinScope(NIL);			/* of no local bindings		   */
@@ -1757,7 +1757,7 @@ Void checkExp() {			/* Top level static check on Expr  */
     staticAnalysis(RESET);
 }
 
-Void checkDefns() {			/* Top level static analysis	   */
+void checkDefns() {			/* Top level static analysis	   */
     staticAnalysis(RESET);
 
     mapProc(checkTyconDefn,tyconDefns);	/* validate tycon definitions	   */
@@ -1791,7 +1791,7 @@ Void checkDefns() {			/* Top level static analysis	   */
     staticAnalysis(RESET);
 }
 
-static Void local addRSsigdecls(pr)	/* add sigdecls from TYPE ... IN ..*/
+static void local addRSsigdecls(pr)	/* add sigdecls from TYPE ... IN ..*/
 Pair pr; {
     List vs = snd(pr);			/* get list of variables	   */
     for (; nonNull(vs); vs=tl(vs)) {
@@ -1802,7 +1802,7 @@ Pair pr; {
     }
 }
 
-static Void local opDefined(bs,op)	 /* check that op bound in bs	   */
+static void local opDefined(bs,op)	 /* check that op bound in bs	   */
 List bs;				 /* (or in current module for	   */
 Cell op; {				 /* constructor functions etc...)  */
     Name n;
@@ -1815,7 +1815,7 @@ Cell op; {				 /* constructor functions etc...)  */
     }
 }
 
-static Void local allNoPrevDef(b)	 /* ensure no previous bindings for*/
+static void local allNoPrevDef(b)	 /* ensure no previous bindings for*/
 Cell b; {				 /* variables in new binding	   */
     if (isVar(fst(b)))
 	noPrevDef(rhsLine(snd(hd(snd(snd(b))))),fst(b));
@@ -1825,7 +1825,7 @@ Cell b; {				 /* variables in new binding	   */
     }
 }
 
-static Void local noPrevDef(line,v)	 /* ensure no previous binding for */
+static void local noPrevDef(line,v)	 /* ensure no previous binding for */
 Int  line;				 /* new variable		   */
 Cell v; {
     Name n = findName(textOf(v));
@@ -1842,7 +1842,7 @@ Cell v; {
     name(n).line = line;
 }
 
-static Void local checkTypeIn(cvs)	/* Check that vars in restricted   */
+static void local checkTypeIn(cvs)	/* Check that vars in restricted   */
 Pair cvs; {				/* synonym are defined, and replace*/
     Tycon c  = fst(cvs);		/* vars with names		   */
     List  vs = snd(cvs);
@@ -1860,7 +1860,7 @@ Pair cvs; {				/* synonym are defined, and replace*/
  * Static Analysis control:
  * ------------------------------------------------------------------------*/
 
-Void staticAnalysis(what)
+void staticAnalysis(what)
 Int what; {
     switch (what) {
 	case INSTALL :

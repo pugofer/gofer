@@ -38,7 +38,7 @@ Name nameSTRun;				/* encapsulation operator for IO   */
  * Built-in control:
  * ------------------------------------------------------------------------*/
 
-Void builtIn(what)
+void builtIn(what)
 Int what; {
     Int i;
 

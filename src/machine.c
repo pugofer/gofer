@@ -79,27 +79,27 @@ static	Memory	    memory;
  * Local function prototypes:
  * ------------------------------------------------------------------------*/
 
-static Void  local instrNone	Args((Instr));
-static Void  local instrInt	Args((Instr,Int));
-static Void  local instrFloat   Args((Instr,FloatPro));
-static Void  local instrCell	Args((Instr,Cell));
-static Void  local instrText	Args((Instr,Text));
-static Void  local instrLab	Args((Instr,Label));
-static Void  local instrIntLab	Args((Instr,Int,Label));
-static Void  local instrCellLab Args((Instr,Cell,Label));
+static void  local instrNone	Args((Instr));
+static void  local instrInt	Args((Instr,Int));
+static void  local instrFloat   Args((Instr,FloatPro));
+static void  local instrCell	Args((Instr,Cell));
+static void  local instrText	Args((Instr,Text));
+static void  local instrLab	Args((Instr,Label));
+static void  local instrIntLab	Args((Instr,Int,Label));
+static void  local instrCellLab Args((Instr,Cell,Label));
 
-static Void  local asSTART	Args((Void));
+static void  local asSTART	Args((void));
 static Label local newLabel	Args((Label));
-static Void  local asEND	Args((Void));
-static Void  local asDICT	Args((Int));
-static Void  local asSLIDE	Args((Int));
-static Void  local asMKAP	Args((Int));
-static Void  local asUPDATE	Args((Int));
-static Void  local asGOTO	Args((Label));
+static void  local asEND	Args((void));
+static void  local asDICT	Args((Int));
+static void  local asSLIDE	Args((Int));
+static void  local asMKAP	Args((Int));
+static void  local asUPDATE	Args((Int));
+static void  local asGOTO	Args((Label));
 
 #ifdef DEBUG_CODE
-static Void  local dissassemble Args((Addr,Addr));
-static Void  local printCell	Args((Cell));
+static void  local dissassemble Args((Addr,Addr));
+static void  local printCell	Args((Cell));
 static Addr  local dissNone	Args((Addr,String));
 static Addr  local dissInt	Args((Addr,String));
 static Addr  local dissFloat    Args((Addr,String));
@@ -110,20 +110,20 @@ static Addr  local dissIntAddr	Args((Addr,String));
 static Addr  local dissCellAddr Args((Addr,String));
 #endif
 
-static Void  local build	Args((Cell,Int));
-static Void  local buildGuards	Args((List,Int));
+static void  local build	Args((Cell,Int));
+static void  local buildGuards	Args((List,Int));
 static Int   local buildLoc	Args((List,Int));
 
-static Void  local make 	Args((Cell,Int,Label,Label));
-static Void  local makeCond	Args((Cell,Cell,Cell,Int,Label,Label));
-static Void  local testGuard	Args((Pair,Int,Label,Label,Label));
-static Void  local testCase	Args((Pair,Int,Label,Label,Label));
+static void  local make 	Args((Cell,Int,Label,Label));
+static void  local makeCond	Args((Cell,Cell,Cell,Int,Label,Label));
+static void  local testGuard	Args((Pair,Int,Label,Label,Label));
+static void  local testCase	Args((Pair,Int,Label,Label,Label));
 
-static Void  local analyseAp	Args((Cell));
-static Void  local buildAp	Args((Cell,Int,Label,Bool));
+static void  local analyseAp	Args((Cell));
+static void  local buildAp	Args((Cell,Int,Label,Bool));
 
-static Void  local evalString   Args((Cell));
-static Void  local run		Args((Addr,StackPtr));
+static void  local evalString   Args((Cell));
+static void  local run		Args((Addr,StackPtr));
 
 /* --------------------------------------------------------------------------
  * Assembler: (Low level, instruction code storage)
@@ -137,13 +137,13 @@ static Int   srsp;			/* simulated runtime stack pointer */
 static Int   offsPosn[NUM_OFFSETS];	/* mapping from logical to physical*/
 					/* offset positions		   */
 
-static Void local instrNone(opc)	/* Opcode with no operands	   */
+static void local instrNone(opc)	/* Opcode with no operands	   */
 Instr opc; {
     lastInstr	       = getMem(1);
     instrAt(lastInstr) = opc;
 }
 
-static Void local instrInt(opc,n)	/* Opcode with integer operand	   */
+static void local instrInt(opc,n)	/* Opcode with integer operand	   */
 Instr opc;
 Int   n; {
     lastInstr	       = getMem(2);
@@ -151,7 +151,7 @@ Int   n; {
     intAt(lastInstr+1) = n;
 }
 
-static Void local instrFloat(opc,fl)	/* Opcode with Float operand	   */
+static void local instrFloat(opc,fl)	/* Opcode with Float operand	   */
 Instr    opc;
 FloatPro fl; {
 #if BREAK_FLOATS
@@ -166,7 +166,7 @@ FloatPro fl; {
 #endif
 }
 
-static Void local instrCell(opc,c)	/* Opcode with Cell operand	   */
+static void local instrCell(opc,c)	/* Opcode with Cell operand	   */
 Instr opc;
 Cell  c; {
     lastInstr		= getMem(2);
@@ -174,7 +174,7 @@ Cell  c; {
     cellAt(lastInstr+1) = c;
 }
 
-static Void local instrText(opc,t)	/* Opcode with Text operand	   */
+static void local instrText(opc,t)	/* Opcode with Text operand	   */
 Instr opc;
 Text  t; {
     lastInstr		= getMem(2);
@@ -182,7 +182,7 @@ Text  t; {
     textAt(lastInstr+1) = t;
 }
 
-static Void local instrLab(opc,l)	/* Opcode with label operand	   */
+static void local instrLab(opc,l)	/* Opcode with label operand	   */
 Instr opc;
 Label l; {
     lastInstr	       = getMem(2);
@@ -192,7 +192,7 @@ Label l; {
 	internal("bad Label");
 }
 
-static Void local instrIntLab(opc,n,l)	/* Opcode with int, label operands */
+static void local instrIntLab(opc,n,l)	/* Opcode with int, label operands */
 Instr opc;
 Int   n;
 Label l; {
@@ -204,7 +204,7 @@ Label l; {
 	internal("bad Label");
 }
 
-static Void local instrCellLab(opc,c,l)	/* Opcode with cell, label operands*/
+static void local instrCellLab(opc,c,l)	/* Opcode with cell, label operands*/
 Instr opc;
 Cell  c;
 Label l; {
@@ -236,7 +236,7 @@ static	Addr	      fixups[NUM_FIXUPS]; /* fixup table maps Label -> Addr*/
 #define endLabel(d,l) if (d==RUNON) atLabel(l)
 #define fix(a)	      addrAt(a) = fixups[labAt(a)]
 
-static Void local asSTART() {	       /* initialise assembler		   */
+static void local asSTART() {	       /* initialise assembler		   */
     fixups[0]	= noMatch;
     nextLab	= 1;
     startInstr	= getMem(0);
@@ -257,7 +257,7 @@ Label d; {
     return d;
 }
 
-static Void local asEND() {	       /* Fix addresses in assembled code  */
+static void local asEND() {	       /* Fix addresses in assembled code  */
     Addr pc = startInstr;
 
     while (pc<=lastInstr)
@@ -326,7 +326,7 @@ static Void local asEND() {	       /* Fix addresses in assembled code  */
 #endif
 #define asFAIL()     instrNone(iFAIL)
 
-static Void local asDICT(n)		/* pick element of dictionary	   */
+static void local asDICT(n)		/* pick element of dictionary	   */
 Int n; {
 /* Sadly, the following optimisation cannot be used unless CELL references
  * in compiled code are garbage collected (and possibly modified when cell  
@@ -344,7 +344,7 @@ Int n; {
 	instrInt(iDICT,n);		/* for std dictionary construction */
 }
 
-static Void local asSLIDE(n)		/* Slide results down stack	   */
+static void local asSLIDE(n)		/* Slide results down stack	   */
 Int n; {
     if (instrAt(lastInstr)==iSLIDE)	/* Peephole optimisation:	   */
 	intAt(lastInstr+1)+=n;		/* SLIDE n;SLIDE m ===> SLIDE (n+m)*/
@@ -353,7 +353,7 @@ Int n; {
     srsp -= n;
 }
 
-static Void local asMKAP(n)		/* Make application nodes ...	   */
+static void local asMKAP(n)		/* Make application nodes ...	   */
 Int n; {
     if (instrAt(lastInstr)==iMKAP)	/* Peephole optimisation:	   */
 	intAt(lastInstr+1)+=n;		/* MKAP n; MKAP m  ===> MKAP (n+m) */
@@ -362,7 +362,7 @@ Int n; {
     srsp -= n;
 }
 
-static Void local asUPDATE(n)		/* Update node ...		   */
+static void local asUPDATE(n)		/* Update node ...		   */
 Int n; {
     if (instrAt(lastInstr)==iMKAP) {	/* Peephole optimisations:	   */
 	if (intAt(lastInstr+1)>1) {	/* MKAP (n+1); UPDATE p		   */
@@ -379,7 +379,7 @@ Int n; {
     srsp--;
 }
 
-static Void local asGOTO(l)		/* End evaluation of expr in manner*/
+static void local asGOTO(l)		/* End evaluation of expr in manner*/
 Label l; {				/* indicated by label l		   */
     switch (l) {					/* inaccurate srsp */
 	case UPDRET : asUPDATE(0);
@@ -397,7 +397,7 @@ Label l; {				/* indicated by label l		   */
 #ifdef DEBUG_CODE
 #define printAddr(a) printf("0x%04X",a)/* printable representation of Addr */
 
-static Void local dissassemble(pc,end) /* print dissassembly of code	   */
+static void local dissassemble(pc,end) /* print dissassembly of code	   */
 Addr pc;
 Addr end; {
     while (pc<=end) {
@@ -433,7 +433,7 @@ Addr end; {
     }
 }
 
-static Void local printCell(c)	       /* printable representation of Cell */
+static void local printCell(c)	       /* printable representation of Cell */
 Cell c; {
     if (isName(c))
 	printf("%s",textToStr(name(c).text));
@@ -519,7 +519,7 @@ String s; {
  * evaluation.
  * ------------------------------------------------------------------------*/
 
-static Void local build(e,co)		/* Generate code which will build  */
+static void local build(e,co)		/* Generate code which will build  */
 Cell e;					/* instance of given expression but*/
 Int  co; {				/* perform no evaluation 	   */
     Int n;
@@ -577,7 +577,7 @@ Int  co; {				/* perform no evaluation 	   */
     }
 }
 
-static Void local buildGuards(gs,co)	/* Generate code to compile list   */
+static void local buildGuards(gs,co)	/* Generate code to compile list   */
 List gs;				/* of guards to a conditional expr */
 Int  co; {				/* without evaluation		   */
     if (isNull(gs)) {
@@ -628,7 +628,7 @@ Int  co; {
 					   endLabel(d,l1);		    \
 				       }
 
-static Void local make(e,co,f,d)       /* Construct code to build e, given */
+static void local make(e,co,f,d)       /* Construct code to build e, given */
 Cell  e;			       /* current offset co, and branch	   */
 Int   co;			       /* to f on failure, d on completion */
 Label f;
@@ -724,7 +724,7 @@ Label d; {
     }
 }
 
-static Void local makeCond(i,t,e,co,f,d)/* Build code for conditional	   */
+static void local makeCond(i,t,e,co,f,d)/* Build code for conditional	   */
 Cell  i,t,e;
 Int   co;
 Label f;
@@ -747,7 +747,7 @@ Label d; {
     endLabel(d,l2);
 }
 
-static Void local testGuard(g,co,f,cf,d)/* Produce code for guard	   */
+static void local testGuard(g,co,f,cf,d)/* Produce code for guard	   */
 Pair  g;
 Int   co;
 Label f;
@@ -759,7 +759,7 @@ Label d; {
     make(snd(g),co,f,d);
 }
 
-static Void local testCase(c,co,f,cf,d) /* Produce code for guard	   */
+static void local testCase(c,co,f,cf,d) /* Produce code for guard	   */
 Pair  c;
 Int   co;				/* labels determine where to go if:*/
 Label f;				/* match succeeds, but rest fails  */
@@ -804,7 +804,7 @@ static Int  rootPortion;	       /* portion of root used ...	   */
 static Name definingName;	       /* name of func being defined,if any*/
 static Int  definingArity;	       /* arity of definingName 	   */
 
-static Void local analyseAp(e)	       /* Determine if any portion of an   */
+static void local analyseAp(e)	       /* Determine if any portion of an   */
 Cell e; {			       /* application can be built using a */
     if (isAp(e)) {		       /* portion of the root		   */
 	analyseAp(fun(e));
@@ -821,7 +821,7 @@ Cell e; {			       /* application can be built using a */
 	rootPortion = 0;
 }
 
-static Void local buildAp(e,co,f,str)	/* Build application, making use of*/
+static void local buildAp(e,co,f,str)	/* Build application, making use of*/
 Cell  e;				/* root optimisation if poss.	   */
 Int   co;
 Label f;
@@ -898,7 +898,7 @@ Cell e; {
     return startInstr;
 }
 
-Void externalPrim(n,s)		/* Add name n as an external primitive;	   */
+void externalPrim(n,s)		/* Add name n as an external primitive;	   */
 Name   n;			/* This is not currently implemented in	   */
 String s; {			/* the current version of the interpreter  */
     ERROR(name(n).line) "Unknown primitive reference \"%s\"", s
@@ -918,7 +918,7 @@ Long  numReductions;		       /* number of reductions counted	   */
 static Cell    errorRedex;	       /* irreducible error expression	   */
 static jmp_buf *evalError = 0;	       /* jump buffer for eval errors	   */
 
-Void eval(n)				   /* Graph reduction evaluator    */
+void eval(n)				   /* Graph reduction evaluator    */
 Cell n; {
     StackPtr base = sp;
     Int      ar;
@@ -1000,7 +1000,7 @@ unw:switch (whatIs(n)) {		   /* unwind spine of application  */
     }
 }
 
-Void unwind(n)			       /* unwind spine of application;	   */
+void unwind(n)			       /* unwind spine of application;	   */
 Cell n; {			       /* like eval except that we always  */
     whnfArgs = 0;		       /* treat the expression n as if it  */
 				       /* were already in whnf. 	   */
@@ -1026,7 +1026,7 @@ unw:switch (whatIs(n)) {
     whnfHead = n;
 }
 
-static Void local evalString(n)		/* expand STRCELL at node n	   */
+static void local evalString(n)		/* expand STRCELL at node n	   */
 Cell n; {
     Text t = textOf(n);
     Int  c = textToStr(t)[0];
@@ -1044,7 +1044,7 @@ Cell n; {
     snd(n) = mkStr(++t);
 }
 
-static Void local run(start,root)      /* execute code beginning at given  */
+static void local run(start,root)      /* execute code beginning at given  */
 Addr	 start;			       /* address with local stack starting*/
 StackPtr root; {		       /* at given root offset		   */
     register Memory pc = memory+start;
@@ -1244,7 +1244,7 @@ Cell e; {			       /* NIL if successful, irreducible   */
     return badRedex;
 }
 
-Void evalFails(root)			/* Eval of current redex fails	   */
+void evalFails(root)			/* Eval of current redex fails	   */
 StackPtr root; {
     errorRedex = stack(root);		/* get error & bypass indirections */
     while (isPair(errorRedex) && fst(errorRedex)==INDIRECT)
@@ -1268,7 +1268,7 @@ Cell graphForExp() {			/* Build graph for expression to be*/
  * Machine control:
  * ------------------------------------------------------------------------*/
 
-Void machine(what)
+void machine(what)
 Int what; {
     switch (what) {
 	case INSTALL : machine(RESET);

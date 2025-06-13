@@ -77,26 +77,26 @@ static	Memory	    memory;
  * Local function prototypes:
  * ------------------------------------------------------------------------*/
 
-static Void   local instrNone	 Args((Instr));
-static Void   local instrInt	 Args((Instr,Int));
-static Void   local instrFloat   Args((Instr,FloatPro));
-static Void   local instrCell	 Args((Instr,Cell));
-static Void   local instrText	 Args((Instr,Text));
-static Void   local instrLab	 Args((Instr,Label));
-static Void   local instrIntLab	 Args((Instr,Int,Label));
-static Void   local instrCellLab Args((Instr,Cell,Label));
+static void   local instrNone	 Args((Instr));
+static void   local instrInt	 Args((Instr,Int));
+static void   local instrFloat   Args((Instr,FloatPro));
+static void   local instrCell	 Args((Instr,Cell));
+static void   local instrText	 Args((Instr,Text));
+static void   local instrLab	 Args((Instr,Label));
+static void   local instrIntLab	 Args((Instr,Int,Label));
+static void   local instrCellLab Args((Instr,Cell,Label));
 
-static Void   local asSTART	 Args((Void));
-static Label  local newLabel	 Args((Void));
-static Void   local asLABEL	 Args((Label));
-static Void   local asEND	 Args((Void));
+static void   local asSTART	 Args((void));
+static Label  local newLabel	 Args((void));
+static void   local asLABEL	 Args((Label));
+static void   local asEND	 Args((void));
 
-static Void   local asMKAP	 Args((Int));
-static Void   local asUPDATE	 Args((Int));
+static void   local asMKAP	 Args((Int));
+static void   local asUPDATE	 Args((Int));
 
 #ifdef DEBUG_CODE
-static Void   local dissassemble Args((Addr));
-static Void   local printCell	 Args((Cell));
+static void   local dissassemble Args((Addr));
+static void   local printCell	 Args((Cell));
 static Addr   local dissNone	 Args((Addr,String));
 static Addr   local dissInt	 Args((Addr,String));
 static Addr   local dissFloat    Args((Addr,String));
@@ -107,53 +107,53 @@ static Addr   local dissIntLab	 Args((Addr,String));
 static Addr   local dissCellLab	 Args((Addr,String));
 #endif
 
-static Void   local doCont	 Args((Pair));
+static void   local doCont	 Args((Pair));
 static Pair   local flush	 Args((Pair));
-static Void   local make	 Args((Cell,Int,Label,Pair));
-static Void   local makeCond	 Args((Cell,Cell,Cell,Int,Label,Pair));
-static Void   local makeCase	 Args((Cell,Int,Label,Pair));
-static Void   local testCase	 Args((Pair,Int,Label,Label,Pair));
-static Void   local makeGded	 Args((List,Int,Label,Pair));
+static void   local make	 Args((Cell,Int,Label,Pair));
+static void   local makeCond	 Args((Cell,Cell,Cell,Int,Label,Pair));
+static void   local makeCase	 Args((Cell,Int,Label,Pair));
+static void   local testCase	 Args((Pair,Int,Label,Label,Pair));
+static void   local makeGded	 Args((List,Int,Label,Pair));
 static Bool   local testGuard	 Args((Pair,Int,Label,Label,Pair));
 
-static Void   local dependsOn	 Args((Cell));
-static Void   local build	 Args((Cell,Int));
-static Void   local buildGuards	 Args((List,Int));
+static void   local dependsOn	 Args((Cell));
+static void   local build	 Args((Cell,Int));
+static void   local buildGuards	 Args((List,Int));
 static Int    local buildLoc	 Args((List,Int));
 
-static Void   local analyseAp	 Args((Cell));
-static Void   local buildAp	 Args((Cell,Int,Label,Bool));
+static void   local analyseAp	 Args((Cell));
+static void   local buildAp	 Args((Cell,Int,Label,Bool));
 
 static List   local identifyDeps Args((Name));
-static Void   local checkPrimDep Args((Name,Name));
-static Void   local outputCDecls Args((FILE *,List));
-static Void   local outputCDicts Args((FILE *));
+static void   local checkPrimDep Args((Name,Name));
+static void   local outputCDecls Args((FILE *,List));
+static void   local outputCDicts Args((FILE *));
 
-static Void   local rspRecalc	 Args((Void));
+static void   local rspRecalc	 Args((void));
 
-static Void   local outputCSc	 Args((FILE *,Name));
+static void   local outputCSc	 Args((FILE *,Name));
 static List   local cCode	 Args((Int,Addr));
 static List   local heapUse	 Args((List));
 static List   local heapAnalyse	 Args((List));
-static Void   local outputCinst	 Args((FILE *,Cell));
+static void   local outputCinst	 Args((FILE *,Cell));
 
-static Void   local expr	 Args((FILE *,Cell));
-static Void   local outputLabel  Args((FILE *,Int));
-static Void   local outputJump	 Args((FILE *,Int));
-static Void   local outputCStr	 Args((FILE *, String));
+static void   local expr	 Args((FILE *,Cell));
+static void   local outputLabel  Args((FILE *,Int));
+static void   local outputJump	 Args((FILE *,Int));
+static void   local outputCStr	 Args((FILE *, String));
 static Bool   local validCIdent  Args((String));
 static String local scNameOf	 Args((Name));
 
-static Void   local startTable	 Args((String,String,String));
-static Void   local tableItem	 Args((FILE *,String));
-static Void   local finishTable	 Args((FILE *));
+static void   local startTable	 Args((String,String,String));
+static void   local tableItem	 Args((FILE *,String));
+static void   local finishTable	 Args((FILE *));
 
 static Int    local externArity	 Args((Type));
 static Type   local transExtType Args((Type));
 static String local showExtType  Args((Type));
 static String local showExtRes   Args((Type));
 static String local showExtRet   Args((Type));
-static Void   local externBody	 Args((FILE *,String,Type));
+static void   local externBody	 Args((FILE *,String,Type));
 
 /* --------------------------------------------------------------------------
  * Assembler: (Low level, instruction code storage)
@@ -166,13 +166,13 @@ static Int   srsp;			/* simulated runtime stack pointer */
 static Int   offsPosn[NUM_OFFSETS];	/* mapping from logical to physical*/
 					/* offset positions		   */
 
-static Void local instrNone(opc)	/* Opcode with no operands	   */
+static void local instrNone(opc)	/* Opcode with no operands	   */
 Instr opc; {
     lastInstr	       = getMem(1);
     instrAt(lastInstr) = opc;
 }
 
-static Void local instrInt(opc,n)	/* Opcode with integer operand	   */
+static void local instrInt(opc,n)	/* Opcode with integer operand	   */
 Instr opc;
 Int   n; {
     lastInstr	       = getMem(2);
@@ -180,7 +180,7 @@ Int   n; {
     intAt(lastInstr+1) = n;
 }
 
-static Void local instrFloat(opc,fl)	/* Opcode with Float operand	   */
+static void local instrFloat(opc,fl)	/* Opcode with Float operand	   */
 Instr opc;
 FloatPro fl; {
 #if BREAK_FLOATS
@@ -195,7 +195,7 @@ FloatPro fl; {
 #endif
 }
 
-static Void local instrCell(opc,c)	/* Opcode with Cell operand	   */
+static void local instrCell(opc,c)	/* Opcode with Cell operand	   */
 Instr opc;
 Cell  c; {
     lastInstr		= getMem(2);
@@ -203,7 +203,7 @@ Cell  c; {
     cellAt(lastInstr+1) = c;
 }
 
-static Void local instrText(opc,t)	/* Opcode with Text operand	   */
+static void local instrText(opc,t)	/* Opcode with Text operand	   */
 Instr opc;
 Text  t; {
     lastInstr		= getMem(2);
@@ -211,7 +211,7 @@ Text  t; {
     textAt(lastInstr+1) = t;
 }
 
-static Void local instrLab(opc,l)	/* Opcode with label operand	   */
+static void local instrLab(opc,l)	/* Opcode with label operand	   */
 Instr opc;
 Label l; {
     lastInstr	       = getMem(2);
@@ -221,7 +221,7 @@ Label l; {
 	internal("bad Label");
 }
 
-static Void local instrIntLab(opc,n,l)	/* Opcode with int, label operands */
+static void local instrIntLab(opc,n,l)	/* Opcode with int, label operands */
 Instr opc;
 Int   n;
 Label l; {
@@ -233,7 +233,7 @@ Label l; {
 	internal("bad Label");
 }
 
-static Void local instrCellLab(opc,c,l)	/* Opcode with cell, label operands*/
+static void local instrCellLab(opc,c,l)	/* Opcode with cell, label operands*/
 Instr opc;
 Cell  c;
 Label l; {
@@ -255,7 +255,7 @@ static  Label       fixups[NUM_FIXUPS]; /* fixups for label values	   */
 
 #define fix(a)      labAt(a) = fixups[labAt(a)]
 
-static Void local asSTART() {		/* initialise assembler		   */
+static void local asSTART() {		/* initialise assembler		   */
     fixups[0]	= FAIL;			/* use label 0 for fail()	   */
     nextLab	= 1;
     startInstr	= getMem(0);
@@ -272,7 +272,7 @@ static Label local newLabel() {		/* allocate new label		   */
     return nextLab++;
 }
 
-static Void local asLABEL(l)		/* indicate label reached	   */
+static void local asLABEL(l)		/* indicate label reached	   */
 Label l; {
     if (instrAt(lastInstr)==iGOTO && labAt(lastInstr+1)==l) {
 	instrAt(lastInstr) = iLABEL;	/* GOTO l; LABEL l  ==>  LABEL l   */
@@ -286,7 +286,7 @@ Label l; {
     }
 }
 
-static Void local asEND() {		/* Fix addresses in assembled code */
+static void local asEND() {		/* Fix addresses in assembled code */
     Addr pc = startInstr;
 
     instrNone(iEND);			/* insert END opcode		   */
@@ -369,7 +369,7 @@ static Void local asEND() {		/* Fix addresses in assembled code */
 			 instrCell(iCELL,nameNil);	\
 		     srsp++
 
-static Void local asMKAP(n)		/* Make application nodes ...	   */
+static void local asMKAP(n)		/* Make application nodes ...	   */
 Int n; {
     if (instrAt(lastInstr)==iMKAP)	/* Peephole optimisation:	   */
 	intAt(lastInstr+1)+=n;		/* MKAP n; MKAP m  ===> MKAP (n+m) */
@@ -378,7 +378,7 @@ Int n; {
     srsp -= n;
 }
 
-static Void local asUPDATE(n)		/* Update node ...		   */
+static void local asUPDATE(n)		/* Update node ...		   */
 Int n; {
     if (instrAt(lastInstr)==iMKAP) {	/* Peephole optimisations:	   */
 	if (intAt(lastInstr+1)>1) {	/* MKAP (n+1); UPDATE p		   */
@@ -400,7 +400,7 @@ Int n; {
  * ------------------------------------------------------------------------*/
 
 #ifdef DEBUG_CODE
-static Void local dissassemble(pc)	/* print dissassembly of code	   */
+static void local dissassemble(pc)	/* print dissassembly of code	   */
 Addr pc; {
     for (;;)
 	switch (instrAt(pc)) {
@@ -435,7 +435,7 @@ Addr pc; {
 	}
 }
 
-static Void local printCell(c)	       /* printable representation of Cell */
+static void local printCell(c)	       /* printable representation of Cell */
 Cell c; {
     if (isName(c))
 	printf("%s",textToStr(name(c).text));
@@ -543,7 +543,7 @@ static Pair shouldntFail;		/* error continuation		   */
 static Pair functionReturn;		/* initial function continuation   */
 static Pair noAction;			/* skip continuation		   */
 
-static Void local doCont(c)		/* insert code for continuation    */
+static void local doCont(c)		/* insert code for continuation    */
 Pair c; {
     Int sl = intOf(fst(c));
     switch (whatIs(snd(c))) {
@@ -583,7 +583,7 @@ Pair d; {
     }
 }
 
-static Void local make(e,co,f,d)	/* Construct code to build e, given*/
+static void local make(e,co,f,d)	/* Construct code to build e, given*/
 Cell  e;				/* current offset co, and branch   */
 Int   co;				/* to f on failure, d on completion*/
 Label f;
@@ -686,7 +686,7 @@ Pair  d; {
     }
 }
 
-static Void local makeCond(i,t,e,co,f,d)/* Build code for conditional	   */
+static void local makeCond(i,t,e,co,f,d)/* Build code for conditional	   */
 Cell  i,t,e;
 Int   co;
 Label f;
@@ -722,7 +722,7 @@ Pair  d; {
     }
 }
 
-static Void local makeCase(c,co,f,d)	/* construct code to implement case*/
+static void local makeCase(c,co,f,d)	/* construct code to implement case*/
 Cell  c;				/* makes the assumption that FLUSH */
 Int   co;				/* will never be required	   */
 Label f;
@@ -757,7 +757,7 @@ Pair  d; {
 	testCase(hd(cs),co,f,f,d1);
 }
 
-static Void local testCase(c,co,f,cf,d)	/* Produce code for guard	   */
+static void local testCase(c,co,f,cf,d)	/* Produce code for guard	   */
 Pair  c;
 Int   co;				/* labels determine where to go if:*/
 Label f;				/* match succeeds, but rest fails  */
@@ -782,7 +782,7 @@ Pair  d; {
     make(snd(c),co+n,f,d);
 }
 
-static Void local makeGded(gs,co,f,d)	/* construct code to implement gded*/
+static void local makeGded(gs,co,f,d)	/* construct code to implement gded*/
 List  gs;				/* equations.  Makes the assumption*/
 Int   co;				/* that FLUSH will never be reqd.  */
 Label f;
@@ -841,7 +841,7 @@ Pair  d; {
 static List scDeps;			/* records immediate dependent	   */
 					/* names and dictionaries	   */
 
-static Void local dependsOn(n)		/* update scDeps with new name	   */
+static void local dependsOn(n)		/* update scDeps with new name	   */
 Cell n; {
 
     if (isName(n))			/* ignore:			   */
@@ -853,7 +853,7 @@ Cell n; {
 	scDeps = cons(n,scDeps);
 }
 
-static Void local build(e,co)		/* Generate code which will build  */
+static void local build(e,co)		/* Generate code which will build  */
 Cell e; 				/* instance of given expression but*/
 Int  co; {				/* perform no evaluation 	   */
     Int n;
@@ -912,7 +912,7 @@ Int  co; {				/* perform no evaluation 	   */
     }
 }
 
-static Void local buildGuards(gs,co)	/* Generate code to compile list   */
+static void local buildGuards(gs,co)	/* Generate code to compile list   */
 List gs;				/* of guards to a conditional expr */
 Int  co; {				/* without evaluation		   */
     if (isNull(gs)) {
@@ -962,7 +962,7 @@ static Int  rootPortion;	       /* portion of root used ...	   */
 static Name definingName;	       /* name of func being defined,if any*/
 static Int  definingArity;	       /* arity of definingName 	   */
 
-static Void local analyseAp(e)	       /* Determine if any portion of an   */
+static void local analyseAp(e)	       /* Determine if any portion of an   */
 Cell e; {			       /* application can be built using a */
     if (isAp(e)) {		       /* portion of the root		   */
 	analyseAp(fun(e));
@@ -979,7 +979,7 @@ Cell e; {			       /* application can be built using a */
 	rootPortion = 0;
 }
 
-static Void local buildAp(e,co,f,str)	/* Build application, making use of*/
+static void local buildAp(e,co,f,str)	/* Build application, making use of*/
 Cell  e;				/* root optimisation if poss.	   */
 Int   co;
 Label f;
@@ -1031,7 +1031,7 @@ Addr codeGen(n,arity,e) 	       /* Generate code for expression e,  */
 Name n; 			       /* treating return value of CAFs    */
 Int  arity;			       /* differently to functs with args  */
 Cell e; {
-    extern Void pScDef Args((Text,Int,Cell));
+    extern void pScDef Args((Text,Int,Cell));
     extern Bool dumpScs;
 
     definingName  = n;
@@ -1062,7 +1062,7 @@ printf("------------------\n");
     return startInstr;
 }
 
-Void externalPrim(n,s)		/* add name n as an external primitive	   */
+void externalPrim(n,s)		/* add name n as an external primitive	   */
 Name   n;
 String s; {
     asSTART();
@@ -1077,7 +1077,7 @@ String s; {
  * specified main program.
  * ------------------------------------------------------------------------*/
 
-Void outputCode(fp,mn,topLevel)		/* print complete C program to	   */
+void outputCode(fp,mn,topLevel)		/* print complete C program to	   */
 FILE   *fp;				/* implement program with main mn  */
 Name   mn;				/* using specified top level	   */
 String topLevel; {
@@ -1162,7 +1162,7 @@ Name mn; {
     return scs;
 }
 
-static Void local checkPrimDep(n,m)	/* Check that primitive dependent  */
+static void local checkPrimDep(n,m)	/* Check that primitive dependent  */
 Name n;					/* m of n is supported by gofc	   */
 Cell m; {
     if (isName(m) && name(m).primDef == PRIM_NOGOFC) {
@@ -1175,7 +1175,7 @@ Cell m; {
     }
 }
 
-static Void local outputCDecls(fp,scs)	/* print forward declarations for  */
+static void local outputCDecls(fp,scs)	/* print forward declarations for  */
 FILE *fp;				/* supercombinators required	   */
 List scs; {
     int num_scs = length(scs);
@@ -1196,7 +1196,7 @@ List scs; {
     fprintf(fp,"};\n\n");
 }
 
-static Void local outputCDicts(fp)	/* print definitions for dictionary*/
+static void local outputCDicts(fp)	/* print definitions for dictionary*/
 FILE *fp; {				/* storage			   */
     char buffer[100];
 
@@ -1259,7 +1259,7 @@ static  int    pushes;			/* number of actual pushes in code */
 
 #define rPush  if (++rsp>=rspMax) rspMax=rsp
 
-static Void local rspRecalc() {		/* Recalculate rsp after change to */
+static void local rspRecalc() {		/* Recalculate rsp after change to */
     Int i = sp;				/* simulated stack pointer sp	   */
     for (rsp=(-1); i>=0; --i)
 	if (isNull(stack(i)) || stack(i)==mkOffset(i))
@@ -1275,7 +1275,7 @@ static Void local rspRecalc() {		/* Recalculate rsp after change to */
 #define ppushed(n)  (isNull(pushed(n)) ? POP : pushed(n))
 #define tpushed(n)  (isNull(pushed(n)) ? TOP : pushed(n))
 
-static Void local outputCSc(fp,n)	/* Print C code for supercombinator*/
+static void local outputCSc(fp,n)	/* Print C code for supercombinator*/
 FILE *fp;
 Name n; {
     String s = 0;
@@ -1671,7 +1671,7 @@ List instrs; {
  * Output individual C code instructions:
  * ------------------------------------------------------------------------*/
 
-static Void local outputCinst(fp,instr)	/* Output single C instruction	   */
+static void local outputCinst(fp,instr)	/* Output single C instruction	   */
 FILE *fp;
 Cell instr; {
     switch (whatIs(instr)) {
@@ -1782,7 +1782,7 @@ Cell instr; {
  * Output small parts of an expression:
  * ------------------------------------------------------------------------*/
 
-static Void local expr(fp,n)		/* print C expression for value	   */
+static void local expr(fp,n)		/* print C expression for value	   */
 FILE *fp;
 Cell n; {
 
@@ -1838,7 +1838,7 @@ Cell n; {
     }
 }
 
-static Void local outputLabel(fp,lab)	/* print C program label	   */
+static void local outputLabel(fp,lab)	/* print C program label	   */
 FILE *fp;
 Int  lab; {
     if (lab<=26)
@@ -1847,7 +1847,7 @@ Int  lab; {
 	fprintf(fp,"a%d",lab-26);
 }
 
-static Void local outputJump(fp,lab)	/* print jump to label, taking	   */
+static void local outputJump(fp,lab)	/* print jump to label, taking	   */
 FILE *fp;				/* special account of FAIL label   */
 Int  lab; {
     if (lab==FAIL)
@@ -1858,7 +1858,7 @@ Int  lab; {
     }
 }
 
-static Void local outputCStr(fp,s)	/* print out string, taking care   */
+static void local outputCStr(fp,s)	/* print out string, taking care   */
 FILE   *fp;				/* to avoid problems with C escape */
 String s; {				/* sequences			   */
     fputc('"',fp);
@@ -1908,7 +1908,7 @@ static String tableStart;
 static String tableEndLine;
 static String tableEndTab;
 
-static Void local startTable(start,endLine,endTab)
+static void local startTable(start,endLine,endTab)
 String start;
 String endLine;
 String endTab; {
@@ -1919,13 +1919,13 @@ String endTab; {
     tableItems   = 0;
 }
 
-static Void local finishTable(fp)
+static void local finishTable(fp)
 FILE *fp; {
     if (tableCol>0)
 	fprintf(fp, "%s", tableEndTab);
 }
 
-static Void local tableItem(fp,s)
+static void local tableItem(fp,s)
 FILE   *fp;
 String s; {
     int n = strlen(s);
@@ -2010,7 +2010,7 @@ Type ty; {
     if (ty==typeBool || ty==typeChar || ty==typeInt || ty==typeFloat)
 	return textToStr(tycon(ty).text);
     else if (ty==UNIT)
-	return "Void";
+	return "void";
     else
 	return "Cell";
 }
@@ -2034,7 +2034,7 @@ Type ty; {				/* a value of type ty		   */
     return "r";
 }
 
-static Void local externBody(fp,exn,ty)	/* generate body for call to extern*/
+static void local externBody(fp,exn,ty)	/* generate body for call to extern*/
 FILE   *fp;				/* function			   */
 String exn;
 Type   ty; {
@@ -2073,7 +2073,7 @@ Type   ty; {
 
     fprintf(fp,"{   extern %s %s Args((",showExtType(ty),exn);
     if (isNull(argTypes))
-	fprintf(fp,"Void));\n");
+	fprintf(fp,"void));\n");
     else {
         for (ts=argTypes; nonNull(ts); ts=tl(ts)) {
 	    fprintf(fp, "%s", showExtType(hd(ts)));
@@ -2131,7 +2131,7 @@ Type   ty; {
  * Machine control:
  * ------------------------------------------------------------------------*/
 
-Void machine(what)
+void machine(what)
 Int what; {
     switch (what) {
 	case RESET   : scDeps  = NIL;

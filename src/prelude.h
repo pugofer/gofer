@@ -132,30 +132,6 @@
 #endif
 // June 12 2025
 
-
-/* WARNING: if you use the following optimisations to assign registers for
- * particular global variables, you should be very careful to make sure that
- * storage(RESET) is called after a longjump (usually resulting from an error
- * condition) and before you try to access the heap.  The current version of
- * main deals with this using everybody(RESET) at the head of the main read,
- * eval, print loop
- */
-
-#ifdef  m68k				/* global registers on an m68k	   */
-#define GLOBALfst	asm("a4")
-#define GLOBALsnd	asm("a5")
-#define GLOBALsp	asm("a3")
-#endif
-
-#ifdef  sparc				/* global registers on a sparc	   */
-/* sadly, although the gcc documentation suggests that the following reg   */
-/* assignments should be ok, experience shows (at least on Suns) that they */
-/* are not -- it seems that atof() and friends spoil things.		   */
-/*#define GLOBALfst	asm("g5")*/
-/*#define GLOBALsnd	asm("g6")*/
-/*#define GLOBALsp	asm("g7")*/
-#endif
-
 #endif
 #endif
 
@@ -178,7 +154,7 @@
 #ifdef __STDC__           /* To enable use of prototypes whenever possible */
 #define Args(x) x
 #else
-#if (TURBOC | BCC | ZTC)  /* K&R 1 does not permit `defined(__STDC__)' ... */
+#if (TURBOC | BCC)  /* K&R 1 does not permit `defined(__STDC__)' ... */
 #define Args(x) x
 #else
 #define Args(x) ()
@@ -210,7 +186,7 @@ extern  int  kbhit	Args((void));
 #define local
 #endif
 #ifndef farCalloc
-#define farCalloc(n,s)	   (Void *)calloc(((unsigned)n),((unsigned)s))
+#define farCalloc(n,s)	   (void *)calloc(((unsigned)n),((unsigned)s))
 #endif
 #ifndef FOPEN_WRITE
 #define FOPEN_WRITE	   "w"
@@ -219,9 +195,9 @@ extern  int  kbhit	Args((void));
 #define FOPEN_APPEND	   "a"
 #endif
 #ifndef sigProto
-#define sigProto(nm)	   Void nm Args((int))
+#define sigProto(nm)	   void nm Args((int))
 #define sigRaise(nm)	   nm(1)
-#define sigHandler(nm)	   Void nm(sig_arg) int sig_arg;
+#define sigHandler(nm)	   void nm(sig_arg) int sig_arg;
 #define sigResume	   return
 #endif
 
@@ -233,7 +209,6 @@ extern  int  kbhit	Args((void));
  * General settings:
  *-------------------------------------------------------------------------*/
 
-#define Void     void   /* older compilers object to: typedef void Void;   */
 typedef unsigned Bool;
 #define TRUE     1
 #define FALSE    0
@@ -297,8 +272,8 @@ typedef unsigned Unsigned;
 #define placeInSet(n)      ((-(n)-1)>>wordShift)
 #define maskInSet(n)       (1<<((-(n)-1)&wordMask))
 
-extern Void     internal   Args((String));
-extern Void     fatal	   Args((String));
+extern void     internal   Args((String));
+extern void     fatal	   Args((String));
 
 #if     HAS_FLOATS
 #ifdef  NEED_MATH

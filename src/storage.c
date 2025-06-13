@@ -13,17 +13,17 @@
 #include <setjmp.h>
 
 static List local insertName		Args((Name,List));
-static Void local patternError		Args((String));
+static void local patternError		Args((String));
 static Bool local stringMatch		Args((String,String));
 
 static Int  local hash			Args((String));
 static Int  local saveText		Args((Text));
 static Cell local markCell		Args((Cell));
-static Void local markSnd		Args((Cell));
+static void local markSnd		Args((Cell));
 static Cell local indirectChain		Args((Cell));
 static Cell local lowLevelLastIn	Args((Cell));
 static Cell local lowLevelLastOut	Args((Cell));
-static Void local closeFile		Args((Int));
+static void local closeFile		Args((Int));
 
 /* --------------------------------------------------------------------------
  * Text storage:
@@ -176,7 +176,7 @@ Text t; {
     return defaultSyntax(t);
 }
 
-Void addSyntax(line,t,sy)	       /* add (t,sy) to syntax table	   */
+void addSyntax(line,t,sy)	       /* add (t,sy) to syntax table	   */
 Int    line;
 Text   t;
 Syntax sy; {
@@ -326,7 +326,7 @@ Text t; {
     return n;
 }
 
-Void addPrim(l,n,s,ty)			/* add primitive function value    */
+void addPrim(l,n,s,ty)			/* add primitive function value    */
 Int    l;
 Name   n;
 String s;
@@ -402,7 +402,7 @@ List   ns; {				/* Null pattern matches every name */
  *     c      matches the character c only
  * ------------------------------------------------------------------------*/
 
-static Void local patternError(s)	/* report error in pattern	   */
+static void local patternError(s)	/* report error in pattern	   */
 String s; {
     ERROR(0) "%s in pattern", s
     EEND;
@@ -545,7 +545,7 @@ Cell	 cellStack[NUM_STACK];	       /* Storage for cells on stack	   */
 StackPtr sp;			       /* stack pointer 		   */
 #endif
 
-Void stackOverflow() {		       /* Report stack overflow 	   */
+void stackOverflow() {		       /* Report stack overflow 	   */
     ERROR(0) "Control stack overflow"
     EEND;
 }
@@ -612,7 +612,7 @@ Name nm; {
     return m;
 }
 
-Void dropModulesFrom(mno)		/* Restore storage to state prior  */
+void dropModulesFrom(mno)		/* Restore storage to state prior  */
 Module mno; {				/* to reading module mno 	   */
     if (mno<moduleHw) {			/* is there anything to restore?   */
 	int i;
@@ -712,7 +712,7 @@ Cell l, r; {				/* heap, garbage collecting first  */
     return c;
 }
 
-Void overwrite(dst,src)			/* overwrite dst cell with src cell*/
+void overwrite(dst,src)			/* overwrite dst cell with src cell*/
 Cell dst, src; {			/* both *MUST* be pairs            */
     if (isPair(dst) && isPair(src)) {
         fst(dst) = fst(src);
@@ -759,7 +759,7 @@ mc: if (!isPair(c))
     return c;
 }
 
-static Void local markSnd(c)		/* Variant of markCell used to     */
+static void local markSnd(c)		/* Variant of markCell used to     */
 Cell c; {				/* update snd component of cell    */
     Cell t;				/* using tail recursion		   */
 
@@ -818,7 +818,7 @@ Cell c; {				/* Detecting loops of indirections */
     return c;
 }
 
-Void markWithoutMove(n)			/* Garbage collect cell at n, as if*/
+void markWithoutMove(n)			/* Garbage collect cell at n, as if*/
 Cell n; {				/* it was a cell ref, but don't    */
 					/* move cell (i.e. retain INDIRECT */
 					/* at top level) so we don't have  */
@@ -835,7 +835,7 @@ Cell n; {				/* it was a cell ref, but don't    */
     }
 }
 
-Void garbageCollect() {			/* Run garbage collector ...	   */
+void garbageCollect() {			/* Run garbage collector ...	   */
     Bool breakStat = breakOn(FALSE);	/* disable break checking	   */
     Int i,j;
     register Int mask;
@@ -901,7 +901,7 @@ Void garbageCollect() {			/* Run garbage collector ...	   */
 
 static Cell lastExprSaved;		/* last expression to be saved	   */
 
-Void setLastExpr(e)			/* save expression for later recall*/
+void setLastExpr(e)			/* save expression for later recall*/
 Cell e; {
     lastExprSaved = NIL;		/* in case attempt to save fails   */
     savedText	  = NUM_TEXT;
@@ -1214,7 +1214,7 @@ String s; {				/* input file			   */
 	return NIL;
 }
 
-Void evalFile(f)				/* read char from given    */
+void evalFile(f)				/* read char from given    */
 Cell f; {					/* input file -- ensure	   */
     Int c;					/* only 1 copy of FILECELL */
     if ((c = fgetc(infiles[intValOf(f)]))==EOF) {
@@ -1230,7 +1230,7 @@ Cell f; {					/* input file -- ensure	   */
     }
 }
 
-static Void local closeFile(n)			/* close input file n	   */
+static void local closeFile(n)			/* close input file n	   */
 Int n; {					/* only permitted when the */
     if (0<=n && n<NUM_FILES && infiles[n]) {	/* end of file is read or  */
 	fclose(infiles[n]);			/* when discarded during gc*/
@@ -1242,7 +1242,7 @@ Int n; {					/* only permitted when the */
  * storage control:
  * ------------------------------------------------------------------------*/
 
-Void storage(what)
+void storage(what)
 Int what; {
     Int i;
 

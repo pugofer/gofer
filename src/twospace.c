@@ -10,8 +10,8 @@
  * Simple twospace copying collector:
  * ------------------------------------------------------------------------*/
 
-static Void   heapInit		Args((Void));
-static Void   markPhase		Args((Void));
+static void   heapInit		Args((void));
+static void   markPhase		Args((void));
 static Cell   forward		Args((Cell));
 static Cell   copyCell		Args((Cell));
 static Cell   copyArray		Args((Cell));
@@ -28,7 +28,7 @@ Cell	hp;				/* current heap pointer		   */
 static  Bool fileUsed[NUM_FILES];	/* file in use flags		   */
 #define mark(c)  c=forward(c)		/* mark graph and save new pointer */
 
-static Void heapInit() {		/* initialise heap storage	   */
+static void heapInit() {		/* initialise heap storage	   */
     space1 = (Heap)(farCalloc(heapSize,sizeof(Cell)));
     space2 = (Heap)(farCalloc(heapSize,sizeof(Cell)));
     if (space1==(Heap)0 || space2==(Heap)0)
@@ -47,7 +47,7 @@ Cell l,r; {				/* with a small hit on speed.	   */
 }
 #endif
 
-Void garbageCollect() {			/* garbage collector		   */
+void garbageCollect() {			/* garbage collector		   */
     register Cell toIn = -heapSize-1;
     Heap swap;
     Int  i;
@@ -92,7 +92,7 @@ Void garbageCollect() {			/* garbage collector		   */
     to   = swap;
 }
 
-static Void markPhase() {		/* mark phase of garbage collector */
+static void markPhase() {		/* mark phase of garbage collector */
     StackPtr sp1;
     Int	     i;
 
@@ -209,7 +209,7 @@ Cell c; {
  * ------------------------------------------------------------------------*/
 
 #if HASKELL_ARRAYS
-Void allocArray(n,bds,z)		/* allocate array of cells	   */
+void allocArray(n,bds,z)		/* allocate array of cells	   */
 Int  n;					/* n = length of array (assume>=0) */
 Cell bds;				/* bds = bounds			   */
 Cell z; {				/* z = default value		   */
@@ -223,7 +223,7 @@ Cell z; {				/* z = default value		   */
 	from[++hp] = z;
 }
 
-Void dupArray(a)			/* duplicate array		   */
+void dupArray(a)			/* duplicate array		   */
 Cell a; {
     Int n = from[++a];
     heap((n+2));			/* also checks for twice as much   */

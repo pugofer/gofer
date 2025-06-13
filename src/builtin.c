@@ -55,7 +55,7 @@ static Name nameLnDone;			/* simple finishing continuation   */
  * Built-in control:
  * ------------------------------------------------------------------------*/
 
-Void builtIn(what)
+void builtIn(what)
 Int what; {
     Int i;
 

@@ -10,21 +10,21 @@
  * Local function prototypes:
  * ------------------------------------------------------------------------*/
 
-static Void   local toggleSet	      Args((Char,Bool));
-static Void   local togglesIn	      Args((Bool));
-static Void   local optionInfo	      Args((Void));
-static Void   local processOption     Args((String));
+static void   local toggleSet	      Args((Char,Bool));
+static void   local togglesIn	      Args((Bool));
+static void   local optionInfo	      Args((void));
+static void   local processOption     Args((String));
 static Int    local argToInt	      Args((String *));
 
-static Void   local loadProject       Args((String));
-static Void   local clearProject      Args((Void));
-static Void   local addScriptName     Args((String));
-static Void   local addScript	      Args((String,Long));
-static Void   local forgetScriptsFrom Args((Module));
+static void   local loadProject       Args((String));
+static void   local clearProject      Args((void));
+static void   local addScriptName     Args((String));
+static void   local addScript	      Args((String,Long));
+static void   local forgetScriptsFrom Args((Module));
 
-static Void   local setLastEdit       Args((String,Int));
+static void   local setLastEdit       Args((String,Int));
 
-static Void   local failed	      Args((Void));
+static void   local failed	      Args((void));
 
 static String local strCopy	      Args((String));
 static Int    local substr	      Args((String,String));
@@ -62,7 +62,7 @@ struct options {			/* command line option toggles	   */
 };
 extern struct options toggle[];
 
-static Void local toggleSet(c,state)	/* Set command line toggle	   */
+static void local toggleSet(c,state)	/* Set command line toggle	   */
 Char c;
 Bool state; {
     Int i;
@@ -75,7 +75,7 @@ Bool state; {
     EEND;
 }
 
-static Void local togglesIn(state)	/* Print current list of toggles in*/
+static void local togglesIn(state)	/* Print current list of toggles in*/
 Bool state; {				/* given state			   */
     Int count = 0;
     Int i;
@@ -90,7 +90,7 @@ Bool state; {				/* given state			   */
 	putchar(' ');
 }
 
-static Void local optionInfo() {	/* Print information about command */
+static void local optionInfo() {	/* Print information about command */
     static String fmts = "%-5s%s\n";	/* line settings		   */
     static String fmtc = "%-5c%s\n";
     Int    i;
@@ -117,7 +117,7 @@ static Void local optionInfo() {	/* Print information about command */
 #endif
 }
 
-static Void local processOption(s)	/* process option string s	   */
+static void local processOption(s)	/* process option string s	   */
 String s; {
     Bool state = (s[0]=='+' ? TRUE : FALSE);
 
@@ -175,7 +175,7 @@ String *sp; {
  * Loading project and script files:
  * ------------------------------------------------------------------------*/
 
-static Void local loadProject(s)	/* Load project file		  */
+static void local loadProject(s)	/* Load project file		  */
 String s; {
     clearProject();
     currProject = s;
@@ -192,14 +192,14 @@ String s; {
     projectLoaded = TRUE;
 }
 
-static Void local clearProject() {     /* clear name for current project   */
+static void local clearProject() {     /* clear name for current project   */
     if (currProject)
 	free(currProject);
     currProject   = 0;
     projectLoaded = FALSE;
 }
 
-static Void local addScriptName(s)     /* add script name to list of files */
+static void local addScriptName(s)     /* add script name to list of files */
 String s; {			       /* to be read in ...		   */
     if (s[0]=='-' || s[0]=='+')
 	processOption(s);
@@ -212,7 +212,7 @@ String s; {			       /* to be read in ...		   */
 	scriptName[namesUpto++] = strCopy(s);
 }
 
-static Void local addScript(fname,len) /* read single script file	   */
+static void local addScript(fname,len) /* read single script file	   */
 String fname;			       /* name of script file		   */
 Long   len; {			       /* length of script file 	   */
     scriptFile = fname;
@@ -230,7 +230,7 @@ Long   len; {			       /* length of script file 	   */
     scriptFile = 0;
 }
 
-static Void local forgetScriptsFrom(scno)/* remove scripts from system	   */
+static void local forgetScriptsFrom(scno)/* remove scripts from system	   */
 Module scno; {
     Module i;
     for (i=scno; i<namesUpto; ++i)
@@ -242,7 +242,7 @@ Module scno; {
 	numScripts = scno;
 }
 
-static Void local setLastEdit(fname,line)/* keep name of last file to edit */
+static void local setLastEdit(fname,line)/* keep name of last file to edit */
 String fname;
 Int    line; {
     if (lastEdit)
@@ -261,7 +261,7 @@ static Int    currPos;
 static Int    maxPos;
 static Int    charCount;
 
-Void setGoal(what, t)		       /* Set goal for what to be t	   */
+void setGoal(what, t)		       /* Set goal for what to be t	   */
 String what;
 Target t; {
     currTarget = (t?t:1);
@@ -277,7 +277,7 @@ Target t; {
     fflush(stdout);
 }
 
-Void soFar(t)			       /* Indicate progress towards goal   */
+void soFar(t)			       /* Indicate progress towards goal   */
 Target t; {			       /* has now reached t		   */
     if (useDots) {
 	Int newPos = (Int)((maxPos * ((long)t))/currTarget);
@@ -295,7 +295,7 @@ Target t; {			       /* has now reached t		   */
     }
 }
 
-Void done() {			       /* Goal has now been achieved	   */
+void done() {			       /* Goal has now been achieved	   */
     if (useDots) {
 	while (maxPos>currPos++)
 	    putchar('.');
@@ -311,7 +311,7 @@ Void done() {			       /* Goal has now been achieved	   */
     fflush(stdout);
 }
 
-static Void local failed() {	       /* Goal cannot be reached due to    */
+static void local failed() {	       /* Goal cannot be reached due to    */
     if (aiming) {		       /* errors			   */
 	aiming = FALSE;
 	putchar('\n');
@@ -323,7 +323,7 @@ static Void local failed() {	       /* Goal cannot be reached due to    */
  * Send message to each component of system:
  * ------------------------------------------------------------------------*/
 
-Void everybody(what)		/* send command `what' to each component of*/
+void everybody(what)		/* send command `what' to each component of*/
 Int what; {			/* system to respond as appropriate ...    */
     machdep(what);		/* The order of calling each component is  */
     storage(what);		/* important for the INSTALL command	   */

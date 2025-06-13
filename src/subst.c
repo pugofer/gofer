@@ -6,7 +6,7 @@
  * Part of type checker dealing with operations on current substitution.
  * ------------------------------------------------------------------------*/
 
-static Void local emptySubstitution() {	/* clear current substitution	   */
+static void local emptySubstitution() {	/* clear current substitution	   */
     numTyvars   = 0;
 #if !FIXED_SUBST
     if (maxTyvars!=NUM_TYVARS) {
@@ -23,7 +23,7 @@ static Void local emptySubstitution() {	/* clear current substitution	   */
     predsAre    = NIL;
 }
 
-static Void local expandSubst(n)	/* add further n type variables to */
+static void local expandSubst(n)	/* add further n type variables to */
 Int n; {				/* current substituion		   */
 #if FIXED_SUBST
     if (numTyvars+n>NUM_TYVARS) {
@@ -120,7 +120,7 @@ Int  o; {
     return ((Tyvar *)0);
 }
 
-static Void local tyvarType(vn)       	/* load type held in type variable */
+static void local tyvarType(vn)       	/* load type held in type variable */
 Int vn; {			       	/* vn into (typeIs,typeOff)	   */
     Tyvar *tyv;
 
@@ -140,7 +140,7 @@ Int vn; {			       	/* vn into (typeIs,typeOff)	   */
     typeOff = vn;
 }
 
-static Void local bindTv(vn,t,o)       	/* set type variable vn to (t,o)   */
+static void local bindTv(vn,t,o)       	/* set type variable vn to (t,o)   */
 Int  vn;
 Type t;
 Int  o; {
@@ -154,7 +154,7 @@ Int  o; {
 #endif
 }
 
-static Void local expandSyn(h,ar,at,ao)	/* Expand type synonym with:	   */
+static void local expandSyn(h,ar,at,ao)	/* Expand type synonym with:	   */
 Tycon h;				/* head h			   */
 Int   ar;				/* ar args (NB. ar>=tycon(h).arity)*/
 Type  *at;				/* original expression (*at,*ao)   */
@@ -183,7 +183,7 @@ Int   *ao; {				/* expansion returned in (*at,*ao) */
     }
 }
 
-static Void local expandSyn1(h,at,ao)	/* Expand type synonym with:	   */
+static void local expandSyn1(h,at,ao)	/* Expand type synonym with:	   */
 Tycon h;				/* head h, tycon(h).arity args,	   */
 Type  *at;				/* original expression (*at,*ao)   */
 Int   *ao; {				/* expansion returned in (*at,*ao) */
@@ -227,7 +227,7 @@ Int  o; {
  * Mark type expression, so that all variables are marked as unused generics
  * ------------------------------------------------------------------------*/
 
-static Void local clearMarks() {       	/* set all unbound type vars to	   */
+static void local clearMarks() {       	/* set all unbound type vars to	   */
     Int i;			       	/* unused generic variables	   */
     for (i=0; i<numTyvars; ++i)
 	if (isNull(tyvars[i].bound))
@@ -236,7 +236,7 @@ static Void local clearMarks() {       	/* set all unbound type vars to	   */
     genericVars = NIL;
 }
 
-static Void local resetGenericsFrom(n)	/* reset all generic vars to unused*/
+static void local resetGenericsFrom(n)	/* reset all generic vars to unused*/
 Int n; {				/* for generics >= n		   */
     Int i;
 
@@ -252,7 +252,7 @@ Int n; {				/* for generics >= n		   */
     nextGeneric = n;
 }
 
-static Void local markTyvar(vn)        	/* mark fixed vars in type bound to*/
+static void local markTyvar(vn)        	/* mark fixed vars in type bound to*/
 Int vn; {			       	/* given type variable		   */
     Tyvar *tyv = tyvar(vn);
 
@@ -262,7 +262,7 @@ Int vn; {			       	/* given type variable		   */
 	(tyv->offs) = FIXED_TYVAR;
 }
 
-static Void local markType(t,o)        	/* mark fixed vars in type (t,o)   */
+static void local markType(t,o)        	/* mark fixed vars in type (t,o)   */
 Type t;
 Int  o; {
     switch (whatIs(t)) {

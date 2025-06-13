@@ -41,7 +41,7 @@ extern Name  nameFormatError,nameOtherError;
 #if    IO_MONAD
 extern Type   typeIO, typeProgIO;	/* for the IO monad, IO and IO ()  */
 extern Type   typeWorld, typeST;	/* built on top of IO = ST World   */
-extern Void   ioExecute Args((Cell));	/* IO monad executor		   */
+extern void   ioExecute Args((Cell));	/* IO monad executor		   */
 extern Name   nameSTRun;		/* encapsulator			   */
 extern Type   typeMutVar;		/* type constr for mutable vars	   */
 #if    HASKELL_ARRAYS
@@ -51,12 +51,12 @@ extern Type   typeMutArr;		/* type constr for mutable arrays  */
 #ifdef LAMBDAVAR
 extern Name  nameVar;			/* internal lambda var constructor */
 extern Type  typeProg;			/* type of a lambda var program	   */
-extern Void  lvExecute	Args((Cell));	/* lambda var executor		   */
+extern void  lvExecute	Args((Cell));	/* lambda var executor		   */
 #endif
 #ifdef LAMBDANU
 extern Name nameTag;			/* internal lambda nu constructor  */
 extern Type typeLnProg;			/* type of a lambda nu prog	   */
-extern Void lnExecute   Args((Cell));	/* Lambda nu executor		   */
+extern void lnExecute   Args((Cell));	/* Lambda nu executor		   */
 #endif
 #if    HASKELL_ARRAYS
 extern Type typeArray;			/* type constr for arrays	   */
@@ -123,7 +123,7 @@ extern Bool  overSingleton;		/* TRUE => overload singleton list */
  * Function prototypes etc...
  * ------------------------------------------------------------------------*/
 
-extern Void   everybody        Args((Int));
+extern void   everybody        Args((Int));
 
 #define RESET   1		/* reset subsystem                         */
 #define MARK    2		/* mark parts of graph in use by subsystem */
@@ -133,83 +133,83 @@ extern Void   everybody        Args((Int));
 #define PRELUDE 6		/* Init. once prelude Tycons/Classes known */
 
 typedef long   Target;
-extern  Void   setGoal          Args((String, Target));
-extern  Void   soFar            Args((Target));
-extern  Void   done             Args((Void));
+extern  void   setGoal          Args((String, Target));
+extern  void   soFar            Args((Target));
+extern  void   done             Args((void));
 extern  String fromEnv		Args((String,String));
 
-extern  Void   storage          Args((Int));
-extern  Void   setLastExpr	Args((Cell));
-extern  Cell   getLastExpr	Args((Void));
+extern  void   storage          Args((Int));
+extern  void   setLastExpr	Args((Cell));
+extern  Cell   getLastExpr	Args((void));
 extern	List   addNamesMatching Args((String,List));
 
-extern  Void   input            Args((Int));
-extern  Void   consoleInput     Args((String));
-extern  Void   projInput	Args((String));
-extern  Void   parseScript      Args((String,Long));
-extern  Void   parseExp         Args((Void));
-extern  String readFilename     Args((Void));
-extern  String readLine		Args((Void));
+extern  void   input            Args((Int));
+extern  void   consoleInput     Args((String));
+extern  void   projInput	Args((String));
+extern  void   parseScript      Args((String,Long));
+extern  void   parseExp         Args((void));
+extern  String readFilename     Args((void));
+extern  String readLine		Args((void));
 extern  Syntax defaultSyntax    Args((Text));
 extern  String unlexChar        Args((Char,Char));
 
-extern  Void   staticAnalysis	Args((Int));
-extern  Void   tyconDefn	Args((Int,Cell,Cell,Cell));
-extern  Void   setTypeIns	Args((List));
-extern  Void   clearTypeIns	Args((Void));
+extern  void   staticAnalysis	Args((Int));
+extern  void   tyconDefn	Args((Int,Cell,Cell,Cell));
+extern  void   setTypeIns	Args((List));
+extern  void   clearTypeIns	Args((void));
 extern  Bool   isAmbiguous	Args((Type));
-extern  Void   ambigError	Args((Int,String,Cell,Type));
-extern  Void   classDefn	Args((Int,Cell,Cell));
-extern  Void   instDefn		Args((Int,Cell,Cell));
-extern  Void   primDefn		Args((Cell,List,Cell));
-extern  Void   checkExp		Args((Void));
-extern  Void   checkDefns	Args((Void));
+extern  void   ambigError	Args((Int,String,Cell,Type));
+extern  void   classDefn	Args((Int,Cell,Cell));
+extern  void   instDefn		Args((Int,Cell,Cell));
+extern  void   primDefn		Args((Cell,List,Cell));
+extern  void   checkExp		Args((void));
+extern  void   checkDefns	Args((void));
 
-extern  Void   typeChecker	Args((Int));
-extern  Type   typeCheckExp	Args((Void));
-extern  Void   typeCheckDefns	Args((Void));
-extern  Void   insertInst	Args((Int,Class,Inst));
+extern  void   typeChecker	Args((Int));
+extern  Type   typeCheckExp	Args((void));
+extern  void   typeCheckDefns	Args((void));
+extern  void   insertInst	Args((Int,Class,Inst));
 extern  Cell   rhsExpr		Args((Cell));
 extern  Int    rhsLine		Args((Cell));
 extern  Bool   typeMatches	Args((Type,Type));
 extern  Bool   typeInstOf	Args((Type,Type));
-extern  Dict   listMonadDict	Args((Void));
+extern  Dict   listMonadDict	Args((void));
 
-extern  Void   kindTCGroup	Args((List));
-extern  Void   kindSigType	Args((Int,Type));
-extern  Void   kindInst		Args((Inst,Int));
+extern  void   kindTCGroup	Args((List));
+extern  void   kindSigType	Args((Int,Type));
+extern  void   kindInst		Args((Inst,Int));
 
-extern  Void   compiler         Args((Cell));
-extern  Void   compileDefns     Args((Void));
-extern  Void   compileExp       Args((Void));
+extern  void   compiler         Args((Cell));
+extern  void   compileDefns     Args((void));
+extern  void   compileExp       Args((void));
 extern  Bool   refutable	Args((Cell));
 extern  Int    discrArity       Args((Cell));
 
-extern  Void   machine          Args((Int));
+extern  void   machine          Args((Int));
 extern  Addr   codeGen          Args((Name,Int,Cell));
-extern  Void   externalPrim	Args((Name,String));
-extern  Void   unwind           Args((Cell));
-extern  Void   eval             Args((Cell));
+extern  void   externalPrim	Args((Name,String));
+extern  void   unwind           Args((Cell));
+extern  void   eval             Args((Cell));
 extern  Cell   evalWithNoError  Args((Cell));
-extern  Void   evalFails        Args((StackPtr));
-extern  Cell   graphForExp	Args((Void));
+extern  void   evalFails        Args((StackPtr));
+extern  Cell   graphForExp	Args((void));
 
-extern  Void   builtIn          Args((Int));
-extern  Void   abandon		Args((String,Cell));
+extern  void   builtIn          Args((Int));
+extern  void   abandon		Args((String,Cell));
 extern  Cell   outputString	Args((FILE *,Cell));
-extern  Void   dialogue		Args((Cell));
+extern  void   dialogue		Args((Cell));
 extern  Cell   consChar		Args((Char));
 
-extern  Void   machdep          Args((Int));
-extern  String timeString	Args((Void));
+extern  void   machdep          Args((Int));
+extern  String timeString	Args((void));
 extern  Int    shellEsc		Args((String));
-extern  Int    getTerminalWidth Args((Void));
-extern  Void   normalTerminal	Args((Void));
-extern  Void   noechoTerminal	Args((Void));
-extern  Int    readTerminalChar Args((Void));
-extern  Void   gcStarted	Args((Void));
-extern  Void   gcScanning	Args((Void));
-extern  Void   gcRecovered	Args((Int));
-extern  Void   gcCStack		Args((Void));
+extern  Int    getTerminalWidth Args((void));
+extern  void   normalTerminal	Args((void));
+extern  void   noechoTerminal	Args((void));
+extern  Int    readTerminalChar Args((void));
+extern  void   gcStarted	Args((void));
+extern  void   gcScanning	Args((void));
+extern  void   gcRecovered	Args((Int));
+extern  void   gcCStack		Args((void));
 
 /*-------------------------------------------------------------------------*/

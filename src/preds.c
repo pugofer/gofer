@@ -18,11 +18,11 @@ Bool silentEvFail = TRUE;		/* TRUE => fail silently if	   */
 
 static Cell   local assumeEvid        Args((Cell,Int));
 static List   local makeEvidArgs      Args((List,Int));
-static Void   local markPred          Args((Cell));
+static void   local markPred          Args((Cell));
 static List   local copyPreds         Args((List));
 static Cell   local copyPred	      Args((Cell,Int));
-static Void   local qualify           Args((List,Cell));
-static Void   local qualifyBinding    Args((List,Cell));
+static void   local qualify           Args((List,Cell));
+static void   local qualifyBinding    Args((List,Cell));
 
 static Cell   local instsOverlap      Args((Inst,Inst));
 static Bool   local instsCompare      Args((Inst,Inst));
@@ -32,11 +32,11 @@ static Bool   local oneWayTypeMatches Args((Type,Int,Type,Int));
 
 static Cell   local proveFrom         Args((List,Cell,Int));
 static List   local evidFrom          Args((Cell,Int));
-static Void   local explicitProve     Args((Int,String,Cell,List,List));
+static void   local explicitProve     Args((Int,String,Cell,List,List));
 static Cell   local addEvidArgs	      Args((Int,String,Cell,List,List,Cell));
-static Void   local cantProve	      Args((Int,String,List,Cell,Cell));
+static void   local cantProve	      Args((Int,String,List,Cell,Cell));
 static List   local simplify          Args((List));
-static Void   local overEvid          Args((Cell,Cell));
+static void   local overEvid          Args((Cell,Cell));
 
 static List   local elimConstPreds    Args((Int,String,Cell,List));
 static Bool   local scanPred	      Args((Cell,Int));
@@ -46,9 +46,9 @@ static Bool   local scanType          Args((Type,Int));
 static Cell   local makeInst	      Args((Int,String,Cell,Cell,Int));
 static Cell   local makeDict          Args((Cell,Int));
 
-static Void   local indexPred	      Args((Class,Cell,Int));
-static Void   local indexType	      Args((Type,Int));
-static Void   local indexLeaf	      Args((Cell));
+static void   local indexPred	      Args((Class,Cell,Int));
+static void   local indexType	      Args((Type,Int));
+static void   local indexLeaf	      Args((Cell));
 
 /* --------------------------------------------------------------------------
  * Predicate sets:
@@ -80,7 +80,7 @@ Int  o; {			       /* vars for each predicate	   */
     return rev(result);
 }
 
-static Void local markPred(pi)	       /* marked fixed type variables in pi*/
+static void local markPred(pi)	       /* marked fixed type variables in pi*/
 Cell pi; {
     Cell cl = fst3(pi);
     Int  o  = intOf(snd3(pi));
@@ -110,7 +110,7 @@ Int  o; {
 	return pi;
 }
 
-static Void local qualify(qs,alt)	/* Add extra dictionary args to	   */
+static void local qualify(qs,alt)	/* Add extra dictionary args to	   */
 List qs;				/* qualify alt by predicates in qs */
 Cell alt; {				/* :: ([Pat],Rhs)		   */
     List ds;
@@ -119,7 +119,7 @@ Cell alt; {				/* :: ([Pat],Rhs)		   */
     fst(alt) = revOnto(ds,fst(alt));
 }
 
-static Void local qualifyBinding(qs,b)	/* Add extra dict args to each	   */
+static void local qualifyBinding(qs,b)	/* Add extra dict args to each	   */
 List qs;				/* alternative in function binding */
 Cell b ; {
     if (!isVar(fst(b)))			/* check for function binding	   */
@@ -164,7 +164,7 @@ Inst ia, ib; {
     return oneWayMatches(pa,alpha,pb,beta);
 }
 
-Void insertInst(line,cl,in)		/* insert instance into class	   */
+void insertInst(line,cl,in)		/* insert instance into class	   */
 Int   line;
 Class cl;
 Inst  in; {
@@ -408,7 +408,7 @@ end:evidLevel--;
     return bestYet;
 }
 
-static Void local explicitProve(l,wh,e,given,reqd)
+static void local explicitProve(l,wh,e,given,reqd)
 Int    l;				/* construct evidence for reqd	   */
 String wh;				/* predicates from given preds	   */
 Cell   e;
@@ -440,7 +440,7 @@ Cell   f; {
     return f;
 }
 
-static Void local cantProve(l,wh,context,e,pi)
+static void local cantProve(l,wh,context,e,pi)
 Int    l;				/* produce error message when an   */
 String wh;				/* instance of a class cannot be   */
 List   context;				/* constructed			   */
@@ -484,7 +484,7 @@ List qs; {				/* returning equiv minmal subset   */
     return result;
 }
 
-static Void local overEvid(c,ev)	/* overwrite evidence (possibly	   */
+static void local overEvid(c,ev)	/* overwrite evidence (possibly	   */
 Cell c;					/* including indirection; select0) */
 Cell ev; {
     if (isPair(ev) && isSelect(fst(ev)))
@@ -695,7 +695,7 @@ printf("breakdown = 1+%d+%d+%d\n",class(c).numMembers,
 
 static Idx firstIdx;
 
-static Void local indexPred(c,pi,o)	/* scan over a monopredicate (i.e a*/
+static void local indexPred(c,pi,o)	/* scan over a monopredicate (i.e a*/
 Class c;				/* predicate with monotype args),  */
 Cell  pi;				/* producing an indexing string of */
 Int   o; {				/* type constrs, and using them to */
@@ -707,7 +707,7 @@ Int   o; {				/* type constrs, and using them to */
     class(c).dictIndex = firstIdx;
 }
 
-static Void local indexType(t,o)	/* scan a monotype as part of the  */
+static void local indexType(t,o)	/* scan a monotype as part of the  */
 Type t;					/* indexPred process.		   */
 Int  o; {
     Cell  temp;
@@ -737,7 +737,7 @@ Int  o; {
     }
 }
 
-static Void local indexLeaf(lf)		/* adjust pointers into current idx*/
+static void local indexLeaf(lf)		/* adjust pointers into current idx*/
 Cell lf; {				/* having detected type constructor*/
     if (currIdx==NOIDX) {		/* lf whilst indexing over a type  */
 	if (lastIdx==NOIDX)

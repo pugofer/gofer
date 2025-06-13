@@ -124,21 +124,21 @@ static  List	  genericVars;		/* list of generic vars		   */
  * Local function prototypes:
  * ------------------------------------------------------------------------*/
 
-static Void   local emptySubstitution Args((Void));
-static Void   local expandSubst       Args((Int));
+static void   local emptySubstitution Args((void));
+static void   local expandSubst       Args((Int));
 static Int    local newTyvars         Args((Int));
 static Int    local newKindedVars     Args((Kind));
 static Tyvar *local getTypeVar        Args((Type,Int));
-static Void   local tyvarType         Args((Int));
-static Void   local bindTv            Args((Int,Type,Int));
-static Void   local expandSyn	      Args((Tycon, Int, Type *, Int *));
-static Void   local expandSyn1	      Args((Tycon, Type *, Int *));
+static void   local tyvarType         Args((Int));
+static void   local bindTv            Args((Int,Type,Int));
+static void   local expandSyn	      Args((Tycon, Int, Type *, Int *));
+static void   local expandSyn1	      Args((Tycon, Type *, Int *));
 static Cell   local getDerefHead      Args((Type,Int));
 
-static Void   local clearMarks        Args((Void));
-static Void   local resetGenericsFrom Args((Int));
-static Void   local markTyvar         Args((Int));
-static Void   local markType          Args((Type,Int));
+static void   local clearMarks        Args((void));
+static void   local resetGenericsFrom Args((Int));
+static void   local markTyvar         Args((Int));
+static void   local markType          Args((Type,Int));
 
 static Type   local copyTyvar         Args((Int));
 static Type   local copyType          Args((Type,Int));
@@ -157,16 +157,16 @@ static Bool   local unify             Args((Type,Int,Type,Int));
 static Bool   local sameType          Args((Type,Int,Type,Int));
 static Bool   local kunify	      Args((Kind,Int,Kind,Int));
 
-static Void   local kindError	      Args((Int,Constr,Constr,String,Kind,Int));
-static Void   local kindConstr	      Args((Int,Constr));
+static void   local kindError	      Args((Int,Constr,Constr,String,Kind,Int));
+static void   local kindConstr	      Args((Int,Constr));
 static Kind   local kindAtom	      Args((Constr));
-static Void   local kindPred	      Args((Int,Cell));
-static Void   local kindType	      Args((Int,String,Type));
-static Void   local fixKinds	      Args((Void));
+static void   local kindPred	      Args((Int,Cell));
+static void   local kindType	      Args((Int,String,Type));
+static void   local fixKinds	      Args((void));
 
-static Void   local initTCKind	      Args((Cell));
-static Void   local kindTC	      Args((Cell));
-static Void   local genTC	      Args((Cell));
+static void   local initTCKind	      Args((Cell));
+static void   local kindTC	      Args((Cell));
+static void   local genTC	      Args((Cell));
 static Kind   local copyKindvar	      Args((Int));
 static Kind   local copyKind	      Args((Kind,Int));
 
@@ -176,76 +176,76 @@ static Kind   local getKind	      Args((Cell,Int));
 static Kind   local makeSimpleKind    Args((Int));
 static Kind   local simpleKind	      Args((Int));
 static Kind   local makeVarKind	      Args((Int));
-static Void   local varKind	      Args((Int));
+static void   local varKind	      Args((Int));
 
-static Void   local emptyAssumption   Args((Void));
-static Void   local enterBindings     Args((Void));
-static Void   local leaveBindings     Args((Void));
-static Void   local markAssumList     Args((List));
+static void   local emptyAssumption   Args((void));
+static void   local enterBindings     Args((void));
+static void   local leaveBindings     Args((void));
+static void   local markAssumList     Args((List));
 static Cell   local findAssum         Args((Text));
 static Pair   local findInAssumList   Args((Text,List));
 static Int    local newVarsBind       Args((Cell));
-static Void   local newDefnBind       Args((Cell,Type));
-static Void   local instantiate       Args((Type));
+static void   local newDefnBind       Args((Cell,Type));
+static void   local instantiate       Args((Type));
 
-static Void   local typeError         Args((Int,Cell,Cell,String,Type,Int));
-static Void   local reportTypeError   Args((Int,Cell,Cell,String,Type,Type));
+static void   local typeError         Args((Int,Cell,Cell,String,Type,Int));
+static void   local reportTypeError   Args((Int,Cell,Cell,String,Type,Type));
 static Cell   local typeExpr          Args((Int,Cell));
 static Cell   local varIntro          Args((Cell,Type));
-static Void   local typeEsign         Args((Int,Cell));
-static Void   local typeCase          Args((Int,Int,Cell));
-static Void   local typeComp	      Args((Int,Type,Cell,List));
-static Void   local typeMonadComp     Args((Int,Cell));
+static void   local typeEsign         Args((Int,Cell));
+static void   local typeCase          Args((Int,Int,Cell));
+static void   local typeComp	      Args((Int,Type,Cell,List));
+static void   local typeMonadComp     Args((Int,Cell));
 static Cell   local compZero	      Args((List,Int));
 static Cell   local typeFreshPat      Args((Int,Cell));
 
 static Cell   local typeAp            Args((Int,Cell));
-static Void   local typeAlt           Args((Cell));
+static void   local typeAlt           Args((Cell));
 static Int    local funcType          Args((Int));
 
-static Void   local typeTuple         Args((Cell));
+static void   local typeTuple         Args((Cell));
 static Type   local makeTupleType     Args((Int));
 
-static Void   local typeBindings      Args((List));
-static Void   local removeTypeSigs    Args((Cell));
+static void   local typeBindings      Args((List));
+static void   local removeTypeSigs    Args((Cell));
 
-static Void   local noOverloading     Args((List));
-static Void   local restrictedBindAss Args((Cell));
-static Void   local restrictedAss     Args((Int,Cell,Type));
+static void   local noOverloading     Args((List));
+static void   local restrictedBindAss Args((Cell));
+static void   local restrictedAss     Args((Int,Cell,Type));
 
-static Void   local explicitTyping    Args((List));
+static void   local explicitTyping    Args((List));
 static List   local gotoExplicit      Args((List));
 static List   local explPreds         Args((Text,List,List));
 
-static Void   local implicitTyping    Args((List));
-static Void   local addEvidParams     Args((List,Cell));
+static void   local implicitTyping    Args((List));
+static void   local addEvidParams     Args((List,Cell));
 
-static Void   local typeInstDefn      Args((Inst));
-static Void   local typeClassDefn     Args((Class));
-static Void   local typeMembers       Args((String,List,List,Cell,Kind));
-static Void   local typeMember        Args((String,Name,Name,Cell,Kind));
+static void   local typeInstDefn      Args((Inst));
+static void   local typeClassDefn     Args((Class));
+static void   local typeMembers       Args((String,List,List,Cell,Kind));
+static void   local typeMember        Args((String,Name,Name,Cell,Kind));
 
-static Void   local typeBind          Args((Cell));
-static Void   local typeDefAlt        Args((Int,Cell,Pair));
+static void   local typeBind          Args((Cell));
+static void   local typeDefAlt        Args((Int,Cell,Pair));
 static Cell   local typeRhs           Args((Cell));
-static Void   local guardedType       Args((Int,Cell));
+static void   local guardedType       Args((Int,Cell));
 
-static Void   local generaliseBind    Args((Int,List,Cell));
-static Void   local generaliseAss     Args((Int,List,Cell));
+static void   local generaliseBind    Args((Int,List,Cell));
+static void   local generaliseAss     Args((Int,List,Cell));
 static Type   local generalise        Args((List,Type));
 
-static Void   local checkBindSigs     Args((Cell));
-static Void   local checkTypeSig      Args((Int,Cell,Type));
-static Void   local tooGeneral        Args((Int,Cell,Type,Type));
+static void   local checkBindSigs     Args((Cell));
+static void   local checkTypeSig      Args((Int,Cell,Type));
+static void   local tooGeneral        Args((Int,Cell,Type,Type));
 
 static Bool   local equalSchemes      Args((Type,Type));
 static Bool   local equalQuals        Args((List,List));
 static Bool   local equalTypes        Args((Type,Type));
 
-static Void   local typeDefnGroup     Args((List));
+static void   local typeDefnGroup     Args((List));
 
 #if IO_DIALOGUE
-static Void   local initIOtypes	      Args((Void));
+static void   local initIOtypes	      Args((void));
 #endif
 
 /* --------------------------------------------------------------------------
@@ -325,25 +325,25 @@ static List depends;		       	/*::[?[Var]] dependents/NODEPENDS  */
 #define saveVarsAssump() List saveAssump = hd(varsBounds)
 #define restoreVarsAss() hd(varsBounds)  = saveAssump
 
-static Void local emptyAssumption() {  	/* set empty type assumption	   */
+static void local emptyAssumption() {  	/* set empty type assumption	   */
     defnBounds = NIL;
     varsBounds = NIL;
     depends    = NIL;
 }
 
-static Void local enterBindings() {    /* Add new level to assumption sets */
+static void local enterBindings() {    /* Add new level to assumption sets */
     defnBounds = cons(NIL,defnBounds);
     varsBounds = cons(NIL,varsBounds);
     depends    = cons(NIL,depends);
 }
 
-static Void local leaveBindings() {    /* Drop one level of assumptions    */
+static void local leaveBindings() {    /* Drop one level of assumptions    */
     defnBounds = tl(defnBounds);
     varsBounds = tl(varsBounds);
     depends    = tl(depends);
 }
 
-static Void local markAssumList(as)    /* Mark all types in assumption set */
+static void local markAssumList(as)    /* Mark all types in assumption set */
 List as; {			       /* :: [(Var, Type)]		   */
     for (; nonNull(as); as=tl(as))     /* No need to mark generic types;   */
 	if (!isPolyType(snd(hd(as))))  /* the only free variables in those */
@@ -409,7 +409,7 @@ Cell v; {
     return beta;
 }
 
-static Void local newDefnBind(v,type)  /* make new assump for defn var	   */
+static void local newDefnBind(v,type)  /* make new assump for defn var	   */
 Cell v; 			       /* and set type if given (nonNull)  */
 Type type; {
     Int beta	   = newTyvars(1);
@@ -423,7 +423,7 @@ Type type; {
     bindTv(beta,typeIs,typeOff);       /* Bind beta to new type skeleton   */
 }
 
-static Void local instantiate(type)    /* instantiate type expr, if nonNull*/
+static void local instantiate(type)    /* instantiate type expr, if nonNull*/
 Type type; {
     predsAre = NIL;
     typeIs   = type;
@@ -459,7 +459,7 @@ Type type; {
  * Type errors:
  * ------------------------------------------------------------------------*/
 
-static Void local typeError(l,e,in,wh,t,o)
+static void local typeError(l,e,in,wh,t,o)
 Int    l;			      /* line number near type error	   */
 String wh;			      /* place in which error occurs	   */
 Cell   e;			      /* source of error		   */
@@ -483,7 +483,7 @@ Int    o; {			      /* type inferred is (typeIs,typeOff) */
     reportTypeError(l,e,in,wh,copyType(typeIs,typeOff),copyType(t,o));
 }
 
-static Void local reportTypeError(l,e,in,wh,inft,expt)
+static void local reportTypeError(l,e,in,wh,inft,expt)
 Int    l;				/* error printing part of typeError*/
 Cell   e, in;				/* separated out for the benefit of*/
 String wh;				/* typing runST			   */
@@ -726,7 +726,7 @@ Type type; {				/* params required		   */
     return v;
 }
 
-static Void local typeEsign(l,e)	/* Type check expression type sig  */
+static void local typeEsign(l,e)	/* Type check expression type sig  */
 Int  l;
 Cell e; {
     static String typeSig = "type signature expression";
@@ -762,7 +762,7 @@ Cell e; {
     preds = revOnto(expPreds,savePreds);
 }
 
-static Void local typeCase(l,beta,c)   /* type check case: pat -> rhs	   */
+static void local typeCase(l,beta,c)   /* type check case: pat -> rhs	   */
 Int  l; 			       /* (case given by c == (pat,rhs))   */
 Int  beta;			       /* need:  pat :: (var,beta)	   */
 Cell c; {			       /*	 rhs :: (var,beta+1)	   */
@@ -779,7 +779,7 @@ Cell c; {			       /*	 rhs :: (var,beta+1)	   */
     restoreVarsAss();
 }
 
-static Void local typeComp(l,m,e,qs)	/* type check comprehension	   */
+static void local typeComp(l,m,e,qs)	/* type check comprehension	   */
 Int  l;
 Type m;					/* monad (mkOffset(0))		   */
 Cell e;
@@ -820,7 +820,7 @@ List qs; {
     }
 }
 
-static Void local typeMonadComp(l,e)	/* type check a monad comprehension*/
+static void local typeMonadComp(l,e)	/* type check a monad comprehension*/
 Int  l;
 Cell e; {
     Int  alpha = newTyvars(1);
@@ -891,7 +891,7 @@ Cell e; {
     return e;
 }
 
-static Void local typeAlt(a)		/* Type check abstraction (Alt)	   */
+static void local typeAlt(a)		/* Type check abstraction (Alt)	   */
 Cell a; {				/* a = ( [p1, ..., pn], rhs )	   */
     List ps	  = fst(a);
     Int  n	  = length(ps);
@@ -933,7 +933,7 @@ Int n; {				/*with n arguments, taking the form*/
 #define MAXTUPCON 10
 static Type tupleConTypes[MAXTUPCON];
 
-static Void local typeTuple(e)	       /* find type for tuple constr, using*/
+static void local typeTuple(e)	       /* find type for tuple constr, using*/
 Cell e; {			       /* tupleConTypes to cache previously*/
     Int n   = tupleOf(e);	       /* calculated tuple constr. types.  */
     typeOff = newTyvars(n);
@@ -961,7 +961,7 @@ Int n; {			       /* t1 -> ... -> tn -> (t1,...,tn)   */
  * Type check group of bindings:
  * ------------------------------------------------------------------------*/
 
-static Void local typeBindings(bs)     /* type check a single binding group*/
+static void local typeBindings(bs)     /* type check a single binding group*/
 List bs; {
     Bool usesPatternBindings = FALSE;
     Bool usesSimplePatterns  = FALSE;
@@ -998,7 +998,7 @@ List bs; {
     hd(depends)    = NIL;
 }
 
-static Void local removeTypeSigs(b)    /* Remove type info from a binding  */
+static void local removeTypeSigs(b)    /* Remove type info from a binding  */
 Cell b; {
     snd(b) = snd(snd(b));
 }
@@ -1007,7 +1007,7 @@ Cell b; {
  * Restricted binding group:
  * ------------------------------------------------------------------------*/
 
-static Void local noOverloading(bs)    /* Type restricted binding group    */
+static void local noOverloading(bs)    /* Type restricted binding group    */
 List bs; {
     List savePreds = preds;
     Cell v;
@@ -1036,7 +1036,7 @@ List bs; {
     map2Proc(generaliseBind,0,NIL,bs); /* Generalise types of defined vars */
 }
 
-static Void local restrictedBindAss(b) /* make assums for vars in binding  */
+static void local restrictedBindAss(b) /* make assums for vars in binding  */
 Cell b; {			       /* gp with restricted overloading   */
 
     if (isVar(fst(b)))		       /* function-binding?		   */
@@ -1058,7 +1058,7 @@ Cell b; {			       /* gp with restricted overloading   */
     }
 }
 
-static Void local restrictedAss(l,v,t) /* Assume that type of binding var v*/
+static void local restrictedAss(l,v,t) /* Assume that type of binding var v*/
 Int  l; 			       /* is t (if nonNull) in restricted  */
 Cell v; 			       /* binding group 		   */
 Type t; {
@@ -1075,7 +1075,7 @@ Type t; {
  * Type unrestricted binding group with explicitly declared types:
  * ------------------------------------------------------------------------*/
 
-static Void local explicitTyping(bs)
+static void local explicitTyping(bs)
 List bs; {
     static String expBinds = "binding group";
     List savePreds  = preds;
@@ -1239,7 +1239,7 @@ List locps; {				/* included in hd(locps)	   */
  * Type unrestricted binding group with no explicitly declared types:
  * ------------------------------------------------------------------------*/
 
-static Void local implicitTyping(bs)
+static void local implicitTyping(bs)
 List bs; {
     static String impBinds = "implicitly typed binding group";
     Int  line      = rhsLine(snd(hd(snd(snd(hd(bs))))));
@@ -1276,7 +1276,7 @@ List bs; {
     preds = savePreds;				/* restore predicates	   */
 }
 
-static Void local addEvidParams(qs,v)  /* overwrite VARID/OPCELL v with	   */
+static void local addEvidParams(qs,v)  /* overwrite VARID/OPCELL v with	   */
 List qs;			       /* application of variable to evid. */
 Cell v; {			       /* parameters given by qs	   */
     if (nonNull(qs)) {
@@ -1296,7 +1296,7 @@ Cell v; {			       /* parameters given by qs	   */
  * Type check bodies of class and instance declarations:
  * ------------------------------------------------------------------------*/
 
-static Void local typeInstDefn(in)	/* type check implementations of   */
+static void local typeInstDefn(in)	/* type check implementations of   */
 Inst in; {				/* member functions for instance in*/
     typeMembers("instance member binding",
 		class(inst(in).cl).members,
@@ -1305,7 +1305,7 @@ Inst in; {				/* member functions for instance in*/
 		inst(in).sig);
 }
 
-static Void local typeClassDefn(c)	/* type check implementations of   */
+static void local typeClassDefn(c)	/* type check implementations of   */
 Class c; {				/* defaults for class c		   */
     typeMembers("default member binding",
 		class(c).members,
@@ -1314,7 +1314,7 @@ Class c; {				/* defaults for class c		   */
 		class(c).sig);
 }
 
-static Void local typeMembers(wh,ms,is,pi,ar)/* type check implementations */
+static void local typeMembers(wh,ms,is,pi,ar)/* type check implementations */
 String wh;				     /* `is' of members `ms' in    */
 List   ms;				     /* class at instance `t' where*/
 List   is;				     /* arity = #vars in t	   */
@@ -1328,7 +1328,7 @@ Kind   ar; {
     }
 }
 
-static Void local typeMember(wh,m,i,pi,ar)   /* type check implementation i*/
+static void local typeMember(wh,m,i,pi,ar)   /* type check implementation i*/
 String wh;				     /* of member m at instance t  */
 Name   m;				     /* where ar = sig of vars in t*/
 Name   i;
@@ -1384,7 +1384,7 @@ Kind   ar; {
  * Type check bodies of bindings:
  * ------------------------------------------------------------------------*/
 
-static Void local typeBind(b)	       /* Type check binding		   */
+static void local typeBind(b)	       /* Type check binding		   */
 Cell b; {
     if (isVar(fst(b))) {			       /* function binding */
 	Cell ass = findTopBinding(fst(b));
@@ -1411,7 +1411,7 @@ Cell b; {
     }
 }
 
-static Void local typeDefAlt(beta,v,a) /* type check alt in func. binding  */
+static void local typeDefAlt(beta,v,a) /* type check alt in func. binding  */
 Int  beta;
 Cell v;
 Pair a; {
@@ -1442,7 +1442,7 @@ Cell e; {
     return e;
 }
 
-static Void local guardedType(beta,gded)/* check type of guard (li,(gd,ex))*/
+static void local guardedType(beta,gded)/* check type of guard (li,(gd,ex))*/
 Int  beta;			       /* should have gd :: Bool,	   */
 Cell gded; {			       /*	      ex :: (var,beta)	   */
     static String guarded = "guarded expression";
@@ -1476,7 +1476,7 @@ Cell rhs; {			       /* a right hand side		   */
  * Calculate generalisation of types:
  * ------------------------------------------------------------------------*/
 
-static Void local generaliseBind(ng,qs,b)
+static void local generaliseBind(ng,qs,b)
 Int  ng;                               /* generalise the types of each var */
 List qs;			       /* defined in binding, qualifying   */
 Cell b; {			       /* with predicates in qs		   */
@@ -1487,7 +1487,7 @@ Cell b; {			       /* with predicates in qs		   */
     }
 }
 
-static Void local generaliseAss(ng,qs,v)/* Lookup type of var v in current */
+static void local generaliseAss(ng,qs,v)/* Lookup type of var v in current */
 Int  ng;			       /* top level assumptions and replace*/
 List qs;			       /* by its generalisation, qualified */
 Cell v; {			       /* by qs, first ng generics already */
@@ -1526,7 +1526,7 @@ printf("\n");
  * Compare declared type schemes with inferred type schemes:
  * ------------------------------------------------------------------------*/
 
-static Void local checkBindSigs(b)     /* check explicit type signature in */
+static void local checkBindSigs(b)     /* check explicit type signature in */
 Cell b; {			       /* binding with inferred type	   */
     if (nonNull(fst(snd(b)))) {
 	if (isVar(fst(b)))	       /* function-binding?		   */
@@ -1548,7 +1548,7 @@ Cell b; {			       /* binding with inferred type	   */
     }
 }
 
-static Void local checkTypeSig(l,v,t)  /* Compare explicit type scheme t   */
+static void local checkTypeSig(l,v,t)  /* Compare explicit type scheme t   */
 Int  l;				       /* declared for v with generalised  */
 Cell v;				       /* type in current assumption       */
 Type t; {
@@ -1561,7 +1561,7 @@ Type t; {
 	tooGeneral(l,v,t,snd(ass));
 }
 
-static Void local tooGeneral(l,e,dt,it)	/* explicit type sig. too general  */
+static void local tooGeneral(l,e,dt,it)	/* explicit type sig. too general  */
 Int  l;
 Cell e;
 Type dt, it; {
@@ -1684,7 +1684,7 @@ Type typeCheckExp() {		       /* Type check top level expression  */
     return type;
 }
 
-Void typeCheckDefns() { 	       /* Type check top level bindings    */
+void typeCheckDefns() { 	       /* Type check top level bindings    */
     Target t  = length(valDefns) + length(instDefns) + length(classDefns);
     Target i  = 0;
     List   gs;
@@ -1711,7 +1711,7 @@ Void typeCheckDefns() { 	       /* Type check top level bindings    */
     done();
 }
 
-static Void local typeDefnGroup(bs)	/* type check group of value defns */
+static void local typeDefnGroup(bs)	/* type check group of value defns */
 List bs; {				/* (one top level scc)		   */
     List as;
 
@@ -1768,7 +1768,7 @@ List bs; {				/* (one top level scc)		   */
  * Type checker control:
  * ------------------------------------------------------------------------*/
 
-Void typeChecker(what)
+void typeChecker(what)
 Int what; {
     Int  i;
 
@@ -1956,7 +1956,7 @@ Int what; {
 }
 
 #if IO_DIALOGUE
-static Void local initIOtypes() {	/* initialise I/O types and cfuns   */
+static void local initIOtypes() {	/* initialise I/O types and cfuns   */
     Type req	    = addPrimTycon("Request",STAR,0,DATATYPE,NIL);
     Type rsp	    = addPrimTycon("Response",STAR,0,DATATYPE,NIL);
     Type ioe	    = addPrimTycon("IOError",STAR,0,DATATYPE,NIL);

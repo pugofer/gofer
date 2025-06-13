@@ -36,45 +36,45 @@ String repeatStr     = 0;		/* Repeat last expr		   */
  * Local function prototypes:
  * ------------------------------------------------------------------------*/
 
-static Void local fileInput	  Args((String,Long));
+static void local fileInput	  Args((String,Long));
 static Bool local literateMode	  Args((String));
-static Void local skip		  Args((Void));
-static Void local thisLineIs	  Args((Int));
-static Void local newlineSkip	  Args((Void));
-static Void local closeAnyInput   Args((Void));
+static void local skip		  Args((void));
+static void local thisLineIs	  Args((Int));
+static void local newlineSkip	  Args((void));
+static void local closeAnyInput   Args((void));
 
-       Int  yyparse	    Args((Void)); /* can't stop yacc making this   */
+       Int  yyparse	    Args((void)); /* can't stop yacc making this   */
 					  /* public, but don't advertise   */
 					  /* it in a header file.	   */
 
-static Void local endToken	  Args((Void));
-static Text local readOperator	  Args((Void));
-static Text local readIdent	  Args((Void));
-static Cell local readNumber	  Args((Void));
-static Cell local readChar	  Args((Void));
-static Cell local readString	  Args((Void));
-static Void local saveStrChr	  Args((Char));
+static void local endToken	  Args((void));
+static Text local readOperator	  Args((void));
+static Text local readIdent	  Args((void));
+static Cell local readNumber	  Args((void));
+static Cell local readChar	  Args((void));
+static Cell local readString	  Args((void));
+static void local saveStrChr	  Args((Char));
 static Cell local readAChar	  Args((Bool));
 
 static Bool local lazyReadMatches Args((String));
 static Cell local readEscapeChar  Args((Bool));
-static Void local skipGap	  Args((Void));
-static Cell local readCtrlChar	  Args((Void));
-static Cell local readOctChar	  Args((Void));
-static Int  local readOctDigit	  Args((Void));
-static Cell local readHexChar	  Args((Void));
-static Int  local readHexDigit	  Args((Void));
-static Cell local readDecChar	  Args((Void));
+static void local skipGap	  Args((void));
+static Cell local readCtrlChar	  Args((void));
+static Cell local readOctChar	  Args((void));
+static Int  local readOctDigit	  Args((void));
+static Cell local readHexChar	  Args((void));
+static Int  local readHexDigit	  Args((void));
+static Cell local readDecChar	  Args((void));
 
-static Void local goOffside	  Args((Int));
-static Void local unOffside	  Args((Void));
-static Bool local canUnOffside	  Args((Void));
+static void local goOffside	  Args((Int));
+static void local unOffside	  Args((void));
+static Bool local canUnOffside	  Args((void));
 
-static Void local skipWhitespace  Args((Void));
-static Int  local yylex 	  Args((Void));
-static Int  local repeatLast	  Args((Void));
+static void local skipWhitespace  Args((void));
+static Int  local yylex 	  Args((void));
+static Int  local repeatLast	  Args((void));
 
-static Void local parseInput	  Args((Int));
+static void local parseInput	  Args((Int));
 
 /* --------------------------------------------------------------------------
  * Text values for reserved words and special symbols:
@@ -139,7 +139,7 @@ static Bool   thisLiterate;
 static  String currentLine;		/* editline or GNU readline	   */
 static  String nextChar;
 #define nextConsoleChar()   (*nextChar=='\0' ? '\n' : *nextChar++)
-extern  Void add_history    Args((String));
+extern  void add_history    Args((String));
 extern  String readline	    Args((String));
 
 #define PROMPTMAX	    20		/* max chars in a sensible prompt  */
@@ -164,7 +164,7 @@ static	Int lastLine;		       /* records type of last line read:  */
 #define TEXTLINE  2		       /* - text comment		   */
 #define DEFNLINE  3		       /* - line containing definition	   */
 
-Void consoleInput(prompt)		/* prepare to input characters from*/
+void consoleInput(prompt)		/* prepare to input characters from*/
 String prompt; {			/* standard in (i.e. console/kbd)  */
     reading	= KEYBOARD;		/* keyboard input is Line oriented,*/
     c0		=			/* i.e. input terminated by '\n'   */
@@ -189,7 +189,7 @@ String prompt; {			/* standard in (i.e. console/kbd)  */
 #endif
 }
 
-Void projInput(nm)		       /* prepare to input characters from */
+void projInput(nm)		       /* prepare to input characters from */
 String nm; {			       /* from named project file	   */
     if (inputStream = fopen(nm,"r")) {
 	reading = PROJFILE;
@@ -204,7 +204,7 @@ String nm; {			       /* from named project file	   */
     }
 }
 
-static Void local fileInput(nm,len)	/* prepare to input characters from*/
+static void local fileInput(nm,len)	/* prepare to input characters from*/
 String nm;				/* named file (specified length is */
 Long   len; {				/* used to set target for reading) */
     if (inputStream = fopen(nm,"r")) {
@@ -271,7 +271,7 @@ String nm; {
     return literateScripts;		/* otherwise, use the default	   */
 }
 
-static Void local skip() {		/* move forward one char in input  */
+static void local skip() {		/* move forward one char in input  */
     if (c0!=EOF) {			/* stream, updating c0, c1, ...	   */
 	if (c0=='\n') {			/* Adjusting cursor coords as nec. */
 	    row++;
@@ -304,7 +304,7 @@ static Void local skip() {		/* move forward one char in input  */
     }
 }
 
-static Void local thisLineIs(kind)	/* register kind of current line   */
+static void local thisLineIs(kind)	/* register kind of current line   */
 Int kind; {				/* & check for literate script errs*/
     if (literateErrors && ((kind==DEFNLINE && lastLine==TEXTLINE) ||
 			   (kind==TEXTLINE && lastLine==DEFNLINE))) {
@@ -314,7 +314,7 @@ Int kind; {				/* & check for literate script errs*/
     lastLine = kind;
 }
 
-static Void local newlineSkip() {      /* skip `\n' (supports lit scripts) */
+static void local newlineSkip() {      /* skip `\n' (supports lit scripts) */
     if (reading==SCRIPTFILE && thisLiterate) {
 	do {
 	    skip();
@@ -345,7 +345,7 @@ static Void local newlineSkip() {      /* skip `\n' (supports lit scripts) */
     skip();
 }
 
-static Void local closeAnyInput() {	/* close input stream, if open	  */
+static void local closeAnyInput() {	/* close input stream, if open	  */
     if (reading==SCRIPTFILE || reading==PROJFILE)
 	fclose(inputStream);
     else if (reading==KEYBOARD)		/* or skip to end of console line  */
@@ -385,7 +385,7 @@ static Int  tokPos;			/* input position in buffer	   */
 static Int  identType;			/* identifier type: CONID / VARID  */
 static Int  opType;			/* operator type  : CONOP / VAROP  */
 
-static Void local endToken() {		/* check for token overflow	   */
+static void local endToken() {		/* check for token overflow	   */
     if (tokPos>MAX_TOKEN) {
 	ERROR(row) "Maximum token length (%d) exceeded", MAX_TOKEN
 	EEND;
@@ -519,7 +519,7 @@ static Cell local readString() {       /* read string literal		   */
     return mkStr(findText(tokenStr));
 }
 
-static Void local saveStrChr(c)        /* save character in string	   */
+static void local saveStrChr(c)        /* save character in string	   */
 Char c; {
     if (c!='\0' && c!='\\') {	       /* save non null char as single char*/
 	saveTokenChar(c);
@@ -633,7 +633,7 @@ Bool allowEmpty; {
     return NIL;/*NOTREACHED*/
 }
 
-static Void local skipGap() {		/* skip over gap in string literal */
+static void local skipGap() {		/* skip over gap in string literal */
     do					/* (simplified in Haskell 1.1)	   */
 	if (c0=='\n')
 	    newlineSkip();
@@ -864,7 +864,7 @@ static	Int	   layout[MAXINDENT+1];/* indentation stack		   */
 #define HARD	   (-1) 	       /* indicates hard indentation	   */
 static	Int	   indentDepth = (-1); /* current indentation nesting	   */
 
-static Void local goOffside(col)       /* insert offside marker 	   */
+static void local goOffside(col)       /* insert offside marker 	   */
 Int col; {			       /* for specified column		   */
     if (indentDepth>=MAXINDENT) {
 	ERROR(row) "Too many levels of program nesting"
@@ -873,7 +873,7 @@ Int col; {			       /* for specified column		   */
     layout[++indentDepth] = col;
 }
 
-static Void local unOffside() {        /* leave layout rule area	   */
+static void local unOffside() {        /* leave layout rule area	   */
     indentDepth--;
 }
 
@@ -885,7 +885,7 @@ static Bool local canUnOffside() {     /* Decide if unoffside permitted    */
  * Main tokeniser:
  * ------------------------------------------------------------------------*/
 
-static Void local skipWhitespace() {   /* skip over whitespace/comments    */
+static void local skipWhitespace() {   /* skip over whitespace/comments    */
 
 ws: while (c0==' ' || c0=='\t' || c0=='\r' || c0=='\f')
 	skip();
@@ -1140,7 +1140,7 @@ Text t; {			       /* by t ...			   */
  * main entry points to parser/lexer:
  * ------------------------------------------------------------------------*/
 
-static Void local parseInput(startWith)/* parse input with given first tok,*/
+static void local parseInput(startWith)/* parse input with given first tok,*/
 Int startWith; {		       /* determining whether to read a    */
     firstToken	 = TRUE;	       /* script or an expression	   */
     firstTokenIs = startWith;
@@ -1155,7 +1155,7 @@ Int startWith; {		       /* determining whether to read a    */
 	internal("parseInput");
 }
 
-Void parseScript(nm,len)	       /* Read a script: sets valDefns and */
+void parseScript(nm,len)	       /* Read a script: sets valDefns and */
 String nm;			       /*                tyconDefns	   */
 Long   len; {			       /* used to set a target for reading)*/
     input(RESET);
@@ -1163,7 +1163,7 @@ Long   len; {			       /* used to set a target for reading)*/
     parseInput(SCRIPT);
 }
 
-Void parseExp() {		       /* read an expression to evaluate   */
+void parseExp() {		       /* read an expression to evaluate   */
     parseInput(EVALEX);
     setLastExpr(inputExpr);
 }
@@ -1172,7 +1172,7 @@ Void parseExp() {		       /* read an expression to evaluate   */
  * Input control:
  * ------------------------------------------------------------------------*/
 
-Void input(what)
+void input(what)
 Int what; {
     switch (what) {
 	case RESET   : tyconDefns  = NIL;

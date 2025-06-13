@@ -23,10 +23,10 @@ Name nameZero;				/* for monads with a zero	   */
  * ------------------------------------------------------------------------*/
 
 static Cell local translate		Args((Cell));
-static Void local transPair		Args((Pair));
-static Void local transTriple		Args((Triple));
-static Void local transAlt		Args((Cell));
-static Void local transCase		Args((Cell));
+static void local transPair		Args((Pair));
+static void local transTriple		Args((Triple));
+static void local transAlt		Args((Cell));
+static void local transCase		Args((Cell));
 static List local transBinds		Args((List));
 static Cell local transRhs		Args((Cell));
 static Cell local mkConsList		Args((List));
@@ -43,12 +43,12 @@ static Cell local pmcTerm		Args((Int,List,Cell));
 static Cell local pmcPair		Args((Int,List,Pair));
 static Cell local pmcTriple		Args((Int,List,Triple));
 static Cell local pmcVar		Args((List,Text));
-static Void local pmcLetrec		Args((Int,List,Pair));
+static void local pmcLetrec		Args((Int,List,Pair));
 static Cell local pmcVarDef		Args((Int,List,List));
-static Void local pmcFunDef		Args((Int,List,Triple));
+static void local pmcFunDef		Args((Int,List,Triple));
 
 static Cell local match 		Args((Int,List,List));
-static Void local tidyHdPat		Args((Offset,Cell));
+static void local tidyHdPat		Args((Offset,Cell));
 static Cell local hdDiscr		Args((List));
 static Int  local discrKind		Args((Cell));
 
@@ -66,23 +66,23 @@ static Cell local joinSw		Args((Int,List));
 static Bool local canFail		Args((Cell));
 
 static Cell local lift			Args((Int,List,Cell));
-static Void local liftPair		Args((Int,List,Pair));
-static Void local liftTriple		Args((Int,List,Triple));
-static Void local liftAlt		Args((Int,List,Cell));
+static void local liftPair		Args((Int,List,Pair));
+static void local liftTriple		Args((Int,List,Triple));
+static void local liftAlt		Args((Int,List,Cell));
 static Cell local liftVar		Args((List,Cell));
 static Cell local liftLetrec		Args((Int,List,Cell));
-static Void local liftFundef		Args((Int,List,Triple));
-static Void local solve 		Args((List));
+static void local liftFundef		Args((Int,List,Triple));
+static void local solve 		Args((List));
 
 static Cell local preComp		Args((Cell));
 static Cell local preCompPair		Args((Pair));
 static Cell local preCompTriple 	Args((Triple));
-static Void local preCompCase		Args((Pair));
+static void local preCompCase		Args((Pair));
 static Cell local preCompOffset 	Args((Int));
 
-static Void local compileGlobalFunction Args((Pair));
-static Void local compileMemberFunction Args((Name));
-static Void local newGlobalFunction	Args((Name,Int,List,Int,Cell));
+static void local compileGlobalFunction Args((Pair));
+static void local compileMemberFunction Args((Name));
+static void local newGlobalFunction	Args((Name,Int,List,Int,Cell));
 
 /* --------------------------------------------------------------------------
  * Transformation: Convert input expressions into a less complex language
@@ -162,25 +162,25 @@ Cell e; {
     return e;
 }
 
-static Void local transPair(pr)        /* Translate each component in a    */
+static void local transPair(pr)        /* Translate each component in a    */
 Pair pr; {			       /* pair of expressions.		   */
     fst(pr) = translate(fst(pr));
     snd(pr) = translate(snd(pr));
 }
 
-static Void local transTriple(tr)      /* Translate each component in a    */
+static void local transTriple(tr)      /* Translate each component in a    */
 Triple tr; {			       /* triple of expressions.	   */
     fst3(tr) = translate(fst3(tr));
     snd3(tr) = translate(snd3(tr));
     thd3(tr) = translate(thd3(tr));
 }
 
-static Void local transAlt(e)	       /* Translate alt:		   */
+static void local transAlt(e)	       /* Translate alt:		   */
 Cell e; {			       /* ([Pat], Rhs) ==> ([Pat], Rhs')   */
     snd(e) = transRhs(snd(e));
 }
 
-static Void local transCase(c)	       /* Translate case:		   */
+static void local transCase(c)	       /* Translate case:		   */
 Cell c; {			       /* (Pat, Rhs) ==> ([Pat], Rhs')	   */
     fst(c) = singleton(fst(c));
     snd(c) = transRhs(snd(c));
@@ -681,7 +681,7 @@ Text t; {
     return n;
 }
 
-static Void local pmcLetrec(co,sc,e)   /* apply pattern matching compiler  */
+static void local pmcLetrec(co,sc,e)   /* apply pattern matching compiler  */
 Int  co;			       /* to LETREC, splitting decls into  */
 List sc;			       /* two sections			   */
 Pair e; {
@@ -722,7 +722,7 @@ List vd; {			       /* vd :: [ ([], rhs) ]		   */
     return pmcTerm(co,sc,d);
 }
 
-static Void local pmcFunDef(co,sc,fd)  /* apply pattern matching compiler  */
+static void local pmcFunDef(co,sc,fd)  /* apply pattern matching compiler  */
 Int    co;			       /* to function definition	   */
 List   sc;
 Triple fd; {			       /* fd :: (Var, Arity, [Alt])	   */
@@ -801,7 +801,7 @@ List us; {			       /* given by us.	co is the current  */
     return joinSw(co,sws);
 }
 
-static Void local tidyHdPat(u,s)       /* tidy head of pat list in a switch*/
+static void local tidyHdPat(u,s)       /* tidy head of pat list in a switch*/
 Offset u;			       /* (Principally eliminating @ pats) */
 Cell   s; {
     Cell p = hd(switchPats(s));
@@ -1121,7 +1121,7 @@ Cell e; {
     return e;
 }
 
-static Void local liftPair(co,tr,pr)   /* lift pair of terms		   */
+static void local liftPair(co,tr,pr)   /* lift pair of terms		   */
 Int  co;
 List tr;
 Pair pr; {
@@ -1129,7 +1129,7 @@ Pair pr; {
     snd(pr) = lift(co,tr,snd(pr));
 }
 
-static Void local liftTriple(co,tr,e)  /* lift triple of terms		   */
+static void local liftTriple(co,tr,e)  /* lift triple of terms		   */
 Int    co;
 List   tr;
 Triple e; {
@@ -1138,7 +1138,7 @@ Triple e; {
     thd3(e) = lift(co,tr,thd3(e));
 }
 
-static Void local liftAlt(co,tr,pr)    /* lift (discr,case) pair	   */
+static void local liftAlt(co,tr,pr)    /* lift (discr,case) pair	   */
 Int  co;
 List tr;
 Cell pr; {			       /* pr :: (discr,case)		   */
@@ -1190,7 +1190,7 @@ Cell e; {
     return e;
 }
 
-static Void local liftFundef(co,tr,fd) /* lift function definition	   */
+static void local liftFundef(co,tr,fd) /* lift function definition	   */
 Int    co;
 List   tr;
 Triple fd; {
@@ -1221,7 +1221,7 @@ Triple fd; {
  */
 
 #ifdef DEBUG_CODE
-static Void dumpFundefs(fs)
+static void dumpFundefs(fs)
 List fs; {
     printf("Dumping Fundefs:\n");
     for (; nonNull(fs); fs=tl(fs)) {
@@ -1244,7 +1244,7 @@ List fs; {
 }
 #endif
 
-static Void local solve(fs)	       /* Solve eqns for lambda-lifting    */
+static void local solve(fs)	       /* Solve eqns for lambda-lifting    */
 List fs; {			       /* of local function definitions    */
     Bool hasChanged;
     List fs0, fs1;
@@ -1379,7 +1379,7 @@ Triple e; {
 		  preComp(thd3(e)));
 }
 
-static Void local preCompCase(e)       /* Apply preComp to (Discr,Expr)    */
+static void local preCompCase(e)       /* Apply preComp to (Discr,Expr)    */
 Pair e; {
     snd(e) = preComp(snd(e));
 }
@@ -1405,7 +1405,7 @@ Int n; {			       /* for local variable/function arg. */
  * Main entry points to compiler:
  * ------------------------------------------------------------------------*/
 
-Void compileExp() {		       /* compile input expression	   */
+void compileExp() {		       /* compile input expression	   */
     compiler(RESET);
 
     inputExpr	 = lift(0,NIL,pmcTerm(0,NIL,translate(inputExpr)));
@@ -1417,7 +1417,7 @@ Void compileExp() {		       /* compile input expression	   */
     inputExpr	 = NIL;
 }
 
-Void compileDefns() {		       /* compile script definitions	   */
+void compileDefns() {		       /* compile script definitions	   */
     Target t = length(valDefns) + length(overDefns);
     Target i = 0;
 
@@ -1433,7 +1433,7 @@ Void compileDefns() {		       /* compile script definitions	   */
     done();
 }
 
-static Void local compileGlobalFunction(bind)
+static void local compileGlobalFunction(bind)
 Pair bind; {
     Name n     = findName(textOf(fst(bind)));
     List defs  = snd(bind);
@@ -1454,7 +1454,7 @@ Pair bind; {
 				 addOffsets(arity,1,NIL))));
 }
 
-static Void local compileMemberFunction(n)
+static void local compileMemberFunction(n)
 Name n; {
     List defs  = name(n).defn;
     Int  arity = length(fst(hd(defs)));
@@ -1473,7 +1473,7 @@ Name n; {
 				 addOffsets(arity,1,NIL))));
 }
 
-static Void local newGlobalFunction(n,arity,fvs,co,e)
+static void local newGlobalFunction(n,arity,fvs,co,e)
 Name n;
 Int  arity;
 List fvs;
@@ -1491,7 +1491,7 @@ Cell e; {
  * Compiler control:
  * ------------------------------------------------------------------------*/
 
-Void compiler(what)
+void compiler(what)
 Int what; {
     switch (what) {
 	case INSTALL :

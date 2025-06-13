@@ -15,11 +15,11 @@
 #define YYSTYPE			 Cell
 
 static Cell   local gcShadow     Args((Int,Cell));
-static Void   local syntaxError  Args((String));
-static String local unexpected   Args((Void));
+static void   local syntaxError  Args((String));
+static String local unexpected   Args((void));
 static Cell   local checkPrec    Args((Cell));
-static Void   local fixDefn      Args((Syntax,Cell,Cell,List));
-static Void   local setSyntax    Args((Int,Syntax,Cell));
+static void   local fixDefn      Args((Syntax,Cell,Cell,List));
+static void   local setSyntax    Args((Int,Syntax,Cell));
 static Cell   local buildTuple   Args((List));
 static Cell   local checkClass   Args((Cell));
 static List   local checkContext Args((List));
@@ -131,7 +131,7 @@ Cell e; {
     return e;
 }
 
-static Void local syntaxError(s)       /* report on syntax error           */
+static void local syntaxError(s)       /* report on syntax error           */
 String s; {
     ERROR(row) "Syntax error in %s (unexpected %s)", s, unexpected()
     EEND;
@@ -219,7 +219,7 @@ Cell p; {
     return p;
 }
 
-static Void local fixDefn(a,line,p,ops)/* Declare syntax of operators      */
+static void local fixDefn(a,line,p,ops)/* Declare syntax of operators      */
 Syntax a;
 Cell   line;
 Cell   p;
@@ -229,7 +229,7 @@ List   ops; {
     map2Proc(setSyntax,l,a,ops);
 }
 
-static Void local setSyntax(line,sy,op)/* set syntax of individ. operator  */
+static void local setSyntax(line,sy,op)/* set syntax of individ. operator  */
 Int    line;
 Syntax sy;
 Cell   op; {

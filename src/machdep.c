@@ -61,9 +61,9 @@ typedef time_t Time;
 #define timeChanged(now,thn)	(now!=thn)
 #define timeSet(var,tm)		var = tm
 
-static Void local getFileInfo	Args((String, Time *, Long *));
+static void local getFileInfo	Args((String, Time *, Long *));
 
-static Void local getFileInfo(s,tm,sz)	/* find time stamp and size of file*/
+static void local getFileInfo(s,tm,sz)	/* find time stamp and size of file*/
 String s;
 Time   *tm;
 Long   *sz; {
@@ -95,21 +95,21 @@ String timeString() {			/* return time&date string	   */
 #if  (MACHDEP_GOFER | MACHDEP_GOFC)
 Bool gcMessages = FALSE;		/* TRUE => print GC messages	   */
 
-Void gcStarted() {			/* notify garbage collector start  */
+void gcStarted() {			/* notify garbage collector start  */
     if (gcMessages) {
 	printf("{{Gc");
 	fflush(stdout);
     }
 }
 
-Void gcScanning() {			/* notify garbage collector scans  */
+void gcScanning() {			/* notify garbage collector scans  */
     if (gcMessages) {
 	putchar(':');
 	fflush(stdout);
     }
 }
 
-Void gcRecovered(recovered)		/* notify garbage collection done  */
+void gcRecovered(recovered)		/* notify garbage collection done  */
 Int recovered; {
     if (gcMessages) {
 	printf("%d}}",recovered);
@@ -120,7 +120,7 @@ Int recovered; {
 Cell *CStackBase;			/* Retain start of C control stack */
 
 
-Void gcCStack() {			/* Garbage collect elements off    */
+void gcCStack() {			/* Garbage collect elements off    */
     Cell stackTop = NIL;		/* C stack			   */
     Cell *ptr = &stackTop;
 #if SMALL_GOFER
@@ -181,12 +181,12 @@ typedef  struct termios  TermParams;
 static Bool messedWithTerminal = FALSE;
 static TermParams originalSettings;
 
-Void normalTerminal() {			/* restore terminal initial state  */
+void normalTerminal() {			/* restore terminal initial state  */
     if (messedWithTerminal)
 	setTerminal(originalSettings);
 }
 
-Void noechoTerminal() {			/* set terminal into noecho mode   */
+void noechoTerminal() {			/* set terminal into noecho mode   */
     TermParams settings;
 
     if (!messedWithTerminal) {
@@ -228,11 +228,11 @@ Int getTerminalWidth() {		/* PC screen is fixed 80 chars	   */
 }
 #endif
 
-Void normalTerminal() {			/* restore terminal initial state  */
+void normalTerminal() {			/* restore terminal initial state  */
     terminalEchoReqd = TRUE;
 }
 
-Void noechoTerminal() {			/* turn terminal echo on/off	   */
+void noechoTerminal() {			/* turn terminal echo on/off	   */
     terminalEchoReqd = FALSE;
 }
 
@@ -440,7 +440,7 @@ static sigHandler(panic) {		/* exit in a panic, on receipt of  */
 }
 #endif
 
-Void machdep(Int what) {
+void machdep(Int what) {
     switch (what) {
         case MARK:
             break;

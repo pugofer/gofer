@@ -19,50 +19,50 @@
  * Local function prototypes:
  * ------------------------------------------------------------------------*/
 
-static Void local putChr	 Args((Int));
-static Void local putStr	 Args((String));
-static Void local putInt	 Args((Int));
-static Void local indent	 Args((Int));
+static void local putChr	 Args((Int));
+static void local putStr	 Args((String));
+static void local putInt	 Args((Int));
+static void local indent	 Args((Int));
 
-static Void local put	         Args((Int,Cell));
-static Void local putComp	 Args((Cell,List));
-static Void local putQual        Args((Cell));
+static void local put	         Args((Int,Cell));
+static void local putComp	 Args((Cell,List));
+static void local putQual        Args((Cell));
 static Bool local isDictVal	 Args((Cell));
 static Cell local maySkipDict	 Args((Cell));
-static Void local putAp		 Args((Int,Cell));
-static Void local putOverInfix   Args((Int,Text,Syntax,Cell));
-static Void local putInfix	 Args((Int,Text,Syntax,Cell,Cell));
-static Void local putSimpleAp	 Args((Cell));
-static Void local putTuple	 Args((Int,Cell));
+static void local putAp		 Args((Int,Cell));
+static void local putOverInfix   Args((Int,Text,Syntax,Cell));
+static void local putInfix	 Args((Int,Text,Syntax,Cell,Cell));
+static void local putSimpleAp	 Args((Cell));
+static void local putTuple	 Args((Int,Cell));
 static Int  local unusedTups	 Args((Int,Cell));
-static Void local unlexVar	 Args((Text));
-static Void local unlexOp	 Args((Text));
-static Void local unlexCharConst Args((Cell));
-static Void local unlexStrConst	 Args((Text));
+static void local unlexVar	 Args((Text));
+static void local unlexOp	 Args((Text));
+static void local unlexCharConst Args((Cell));
+static void local unlexStrConst	 Args((Text));
 
 #ifdef GOFC_OUTPUT
-static Void local pPut		 Args((Int,Cell,Int));
-static Void local pPutAp	 Args((Int,Cell,Int));
-static Void local pPutSimpleAp	 Args((Cell,Int));
-static Void local pPutTuple	 Args((Int,Cell,Int));
+static void local pPut		 Args((Int,Cell,Int));
+static void local pPutAp	 Args((Int,Cell,Int));
+static void local pPutSimpleAp	 Args((Cell,Int));
+static void local pPutTuple	 Args((Int,Cell,Int));
 static Int  local punusedTups	 Args((Int,Cell,Int));
-static Void local pPutOffset	 Args((Int));
+static void local pPutOffset	 Args((Int));
 static Int  local pPutLocals	 Args((List,Int));
-static Void local pLiftedStart	 Args((Cell,Int,String));
-static Void local pLifted	 Args((Cell,Int,String));
+static void local pLiftedStart	 Args((Cell,Int,String));
+static void local pLifted	 Args((Cell,Int,String));
 static Int  local pDiscr	 Args((Cell,Int));
 #endif
 
-static Void local putSigType	 Args((Cell));
-static Void local putContext	 Args((List));
-static Void local putPred	 Args((Cell));
-static Void local putType	 Args((Cell,Int));
-static Void local putTyVar	 Args((Int));
+static void local putSigType	 Args((Cell));
+static void local putContext	 Args((List));
+static void local putPred	 Args((Cell));
+static void local putType	 Args((Cell,Int));
+static void local putTyVar	 Args((Int));
 static Bool local putTupleType   Args((Cell));
-static Void local putApType	 Args((Type));
+static void local putApType	 Args((Type));
 
-static Void local putKind	 Args((Kind));
-static Void local putSig	 Args((Cell));
+static void local putKind	 Args((Kind));
+static void local putSig	 Args((Cell));
 
 /* --------------------------------------------------------------------------
  * Basic output routines:
@@ -76,13 +76,13 @@ Bool   showDicts = FALSE;		/* TRUE => include dictionary vars */
 #define OPEN(b)    if (b) putChr('(');
 #define CLOSE(b)   if (b) putChr(')');
 
-static Void local putChr(c)             /* print single character          */
+static void local putChr(c)             /* print single character          */
 Int c; {
     putc(c,outputStream);
     outColumn++;
 }
 
-static Void local putStr(s)             /* print string                    */
+static void local putStr(s)             /* print string                    */
 String s; {
     for (; *s; s++) {
         putc(*s,outputStream);
@@ -90,14 +90,14 @@ String s; {
     }
 }
 
-static Void local putInt(n)             /* print integer                   */
+static void local putInt(n)             /* print integer                   */
 Int n; {
     static char intBuf[16];
     sprintf(intBuf,"%d",n);
     putStr(intBuf);
 }
 
-static Void local indent(n)             /* indent to particular position   */
+static void local indent(n)             /* indent to particular position   */
 Int n; {
     outColumn = n;
     while (0<n--) {
@@ -126,7 +126,7 @@ Int n; {
 
 static Int putDepth = 0;	       /* limits depth of printing DBG	   */
 
-static Void local put(d,e)	       /* print expression e in context of */
+static void local put(d,e)	       /* print expression e in context of */
 Int  d; 			       /* operator of precedence d	   */
 Cell e; {
     List xs;
@@ -298,7 +298,7 @@ Cell e; {
     putDepth--;
 }
 
-static Void local putComp(e,qs)		/* print comprehension		   */
+static void local putComp(e,qs)		/* print comprehension		   */
 Cell e;
 List qs; {
     putStr("[ ");
@@ -314,7 +314,7 @@ List qs; {
     putStr(" ]");
 }
 
-static Void local putQual(q)		/* print list comp qualifier	   */
+static void local putQual(q)		/* print list comp qualifier	   */
 Cell q; {
     switch (whatIs(q)) {
 	case BOOLQUAL : put(NEVER,snd(q));
@@ -348,7 +348,7 @@ Cell e; {				/* possibly ignoring dict aps	   */
     return e;
 }
 
-static Void local putAp(d,e)		/* print application (args>=1)	   */
+static void local putAp(d,e)		/* print application (args>=1)	   */
 Int  d;
 Cell e; {
     Bool   anyDictArgs = FALSE;
@@ -432,7 +432,7 @@ Cell e; {
     }
 }
 
-static Void local putOverInfix(args,t,sy,e)
+static void local putOverInfix(args,t,sy,e)
 Int    args;			       /* infix applied to >= 3 arguments  */
 Text   t;
 Syntax sy;
@@ -446,7 +446,7 @@ Cell   e; {
 	putInfix(ALWAYS,t,sy,arg(maySkipDict(fun(e))),arg(e));
 }
 
-static Void local putInfix(d,t,sy,e,f)  /* print infix expression	   */
+static void local putInfix(d,t,sy,e,f)  /* print infix expression	   */
 Int    d;
 Text   t;				/* Infix operator symbol  	   */
 Syntax sy;				/* with name t, syntax s 	   */
@@ -463,7 +463,7 @@ Cell   e, f; {				/* Left and right operands	   */
     CLOSE(d>p);
 }
 
-static Void local putSimpleAp(e)       /* print application e0 e1 ... en   */
+static void local putSimpleAp(e)       /* print application e0 e1 ... en   */
 Cell e; {
     if (isAp(e)) {
 	putSimpleAp(maySkipDict(fun(e)));
@@ -474,7 +474,7 @@ Cell e; {
 	put(FUN_PREC,e);
 }
 
-static Void local putTuple(ts,e)	/* Print tuple expression, allowing*/
+static void local putTuple(ts,e)	/* Print tuple expression, allowing*/
 Int  ts;				/* for possibility of either too   */
 Cell e; {				/* few or too many args to constr  */
     Int i;
@@ -502,7 +502,7 @@ Cell e; {				/* args not yet printed ...	   */
     return ts;
 }
 
-static Void local unlexVar(t)	       /* print text as a variable name    */
+static void local unlexVar(t)	       /* print text as a variable name    */
 Text t; {			       /* operator symbols must be enclosed*/
     String s = textToStr(t);	       /* in parentheses... except [] ...  */
 
@@ -515,7 +515,7 @@ Text t; {			       /* operator symbols must be enclosed*/
     }
 }
 
-static Void local unlexOp(t)	       /* print text as operator name	   */
+static void local unlexOp(t)	       /* print text as operator name	   */
 Text t; {			       /* alpha numeric symbols must be    */
     String s = textToStr(t);	       /* enclosed by backquotes	   */
 
@@ -528,14 +528,14 @@ Text t; {			       /* alpha numeric symbols must be    */
 	putStr(s);
 }
 
-static Void local unlexCharConst(c)
+static void local unlexCharConst(c)
 Cell c; {
     putChr('\'');
     putStr(unlexChar(c,'\''));
     putChr('\'');
 }
 
-static Void local unlexStrConst(t)
+static void local unlexStrConst(t)
 Text t; {
     String s            = textToStr(t);
     static Char SO      = 14;		/* ASCII code for '\SO'		   */
@@ -567,7 +567,7 @@ Text t; {
  * ------------------------------------------------------------------------*/
 
 #ifdef GOFC_OUTPUT
-static Void local pPut(d,e,co)	       /* pretty print expr in context of  */
+static void local pPut(d,e,co)	       /* pretty print expr in context of  */
 Int  d; 			       /* operator of precedence d	   */
 Cell e;				       /* with current offset co	   */
 Int  co; {
@@ -631,7 +631,7 @@ Int  co; {
     }
 }
 
-static Void local pPutAp(d,e,co)	/* print application (args>=1)	   */
+static void local pPutAp(d,e,co)	/* print application (args>=1)	   */
 Int  d;
 Cell e;
 Int  co; {
@@ -690,7 +690,7 @@ Int  co; {
 
 }
 
-static Void local pPutSimpleAp(e,co)    /* print application e0 e1 ... en  */
+static void local pPutSimpleAp(e,co)    /* print application e0 e1 ... en  */
 Cell e;
 Int  co; {
     if (isAp(e)) {
@@ -702,7 +702,7 @@ Int  co; {
 	pPut(FUN_PREC,e,co);
 }
 
-static Void local pPutTuple(ts,e,co)	/* Print tuple expression, allowing*/
+static void local pPutTuple(ts,e,co)	/* Print tuple expression, allowing*/
 Int  ts;				/* for possibility of either too   */
 Cell e;					/* few or too many args to constr  */
 Int  co; {
@@ -732,7 +732,7 @@ Int  co; {
     return ts;
 }
 
-static Void local pPutOffset(n)		/* pretty print offset number	   */
+static void local pPutOffset(n)		/* pretty print offset number	   */
 Int n; {
     putChr('o');
     putInt(n);
@@ -759,7 +759,7 @@ Int  co; {
     return n;
 }
 
-static Void local pLiftedStart(e,co,eq)	/* print start of definition	   */
+static void local pLiftedStart(e,co,eq)	/* print start of definition	   */
 Cell   e;
 Int    co;
 String eq; {
@@ -770,7 +770,7 @@ String eq; {
     pLifted(e,co,eq);
 }
 
-static Void local pLifted(e,co,eq)	/* print lifted definition	   */
+static void local pLifted(e,co,eq)	/* print lifted definition	   */
 Cell   e;
 Int    co;
 String eq; {
@@ -889,7 +889,7 @@ Int  co; {
     return arity;
 }
 
-Void pScDef(t,arity,e)			/* pretty print sc defn on gofcFp  */
+void pScDef(t,arity,e)			/* pretty print sc defn on gofcFp  */
 Text t;
 Int  arity;
 Cell e; {
@@ -911,7 +911,7 @@ Cell e; {
  * Print type expression:
  * ------------------------------------------------------------------------*/
 
-static Void local putSigType(t)		/* print (possibly) generic type   */
+static void local putSigType(t)		/* print (possibly) generic type   */
 Cell t; {
     if (isPolyType(t))			/* skip (forall _) part (if any)   */
         t = monoTypeOf(t);
@@ -925,7 +925,7 @@ Cell t; {
     putType(t,NEVER);			/* Finally, print rest of type ... */
 }
 
-static Void local putContext(qs)	/* print context list		   */
+static void local putContext(qs)	/* print context list		   */
 List qs; {
     if (isNull(qs))
 	putStr("()");
@@ -942,7 +942,7 @@ List qs; {
     }
 }
 
-static Void local putPred(pi)		/* Output predicate		   */
+static void local putPred(pi)		/* Output predicate		   */
 Cell pi; {
     if (isAp(pi)) {
 	putPred(fun(pi));
@@ -957,7 +957,7 @@ Cell pi; {
 	putStr("<unknownPredicate>");
 }
 
-static Void local putType(t,prec)	/* print nongeneric type expression*/
+static void local putType(t,prec)	/* print nongeneric type expression*/
 Cell t;
 Int  prec; {
     switch(whatIs(t)) {
@@ -1043,7 +1043,7 @@ Int  prec; {
     }
 }
 
-static Void local putTyVar(n)		/* print type variable		   */
+static void local putTyVar(n)		/* print type variable		   */
 Int n; {
     static String alphabet		/* for the benefit of EBCDIC :-)   */
 		="abcdefghijklmnopqrstuvwxyz";
@@ -1063,7 +1063,7 @@ Cell e; {				/* TRUE if something was printed,  */
     return FALSE;
 }
 
-static Void local putApType(t)		/* print type application	   */
+static void local putApType(t)		/* print type application	   */
 Cell t; {
     if (isAp(t)) {
 #if IO_MONAD
@@ -1085,7 +1085,7 @@ Cell t; {
  * Print kind expression:
  * ------------------------------------------------------------------------*/
 
-static Void local putKind(k)		/* print kind expression	   */
+static void local putKind(k)		/* print kind expression	   */
 Kind k; {
     switch (whatIs(k)) {
 	case AP	     : if (isAp(fst(k))) {
@@ -1113,7 +1113,7 @@ Kind k; {
     }
 }
 
-static Void local putSig(sig)		/* print class kind signature	   */
+static void local putSig(sig)		/* print class kind signature	   */
 Cell sig; {
     putChr('(');
     putKind(hd(sig));
@@ -1128,7 +1128,7 @@ Cell sig; {
  * Main drivers:
  * ------------------------------------------------------------------------*/
 
-Void printExp(fp,e)			/* print expr on specified stream  */
+void printExp(fp,e)			/* print expr on specified stream  */
 FILE *fp;
 Cell e; {
     outputStream = fp;
@@ -1136,35 +1136,35 @@ Cell e; {
     put(NEVER,e);
 }
 
-Void printType(fp,t)			/* print type on specified stream  */
+void printType(fp,t)			/* print type on specified stream  */
 FILE *fp;
 Cell t; {
     outputStream = fp;
     putSigType(t);
 }
 
-Void printContext(fp,qs)		/* print context on spec. stream   */
+void printContext(fp,qs)		/* print context on spec. stream   */
 FILE *fp;
 List qs; {
     outputStream = fp;
     putContext(qs);
 }
 
-Void printPred(fp,pi)			/* print predicate pi on stream    */
+void printPred(fp,pi)			/* print predicate pi on stream    */
 FILE *fp;
 Cell pi; {
     outputStream = fp;
     putPred(pi);
 }
 
-Void printKind(fp,k)			/* print kind k on stream	   */
+void printKind(fp,k)			/* print kind k on stream	   */
 FILE *fp;
 Kind k; {
     outputStream = fp;
     putKind(k);
 }
 
-Void printSig(fp,sig)			/* print class kind signature	   */
+void printSig(fp,sig)			/* print class kind signature	   */
 FILE *fp;
 Cell sig; {
     outputStream = fp;

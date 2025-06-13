@@ -28,7 +28,7 @@ typedef Cell	     Type;			 /* type expression	   */
 typedef Cell	     Kind;			 /* kind expression	   */
 typedef Cell	     Constr;			 /* constructor expression */
 typedef Cell	     Name;			 /* named value 	   */
-typedef Void	     (*Prim) Args((StackPtr));	 /* primitive function	   */
+typedef void	     (*Prim) Args((StackPtr));	 /* primitive function	   */
 typedef Cell	     Class;			 /* type class		   */
 typedef Cell	     Inst;			 /* instance of type class */
 typedef Int	     Idx;			 /* dictionary index tree  */
@@ -46,8 +46,8 @@ typedef FloatImpType Float;			 /* implementation of Float*/
 
 extern	String	     textToStr		Args((Text));
 extern	Text	     findText		Args((String));
-extern	Text	     inventText		Args((Void));
-extern  Text	     inventDictText	Args((Void));
+extern	Text	     inventText		Args((void));
+extern  Text	     inventDictText	Args((void));
 
 /* --------------------------------------------------------------------------
  * Specification of syntax (i.e. default written form of application)
@@ -68,7 +68,7 @@ extern  Text	     inventDictText	Args((Void));
 #define mkSyntax(a,p)	((a)|(p))
 #define DEF_OPSYNTAX	mkSyntax(DEF_ASS,DEF_PREC)
 
-extern	Void   addSyntax  Args((Int,Text,Syntax));
+extern	void   addSyntax  Args((Int,Text,Syntax));
 extern	Syntax syntaxOf   Args((Text));
 
 /* --------------------------------------------------------------------------
@@ -113,10 +113,10 @@ extern   Heap 	     heapTopSnd;
 #define snd(c)	     heapTopSnd[c]
 
 extern	Pair	     pair	     Args((Cell,Cell));
-extern  Void	     overwrite	     Args((Pair,Pair));
+extern  void	     overwrite	     Args((Pair,Pair));
 extern  Cell	     markExpr	     Args((Cell));
-extern  Void	     markWithoutMove Args((Cell));
-extern  Void	     garbageCollect  Args((Void));
+extern  void	     markWithoutMove Args((Cell));
+extern  void	     garbageCollect  Args((void));
 
 #define mark(v)      v=markExpr(v)
 
@@ -168,7 +168,7 @@ extern	Cell	     whatIs    Args((Cell));
 extern	Bool		isVar     Args((Cell));
 extern	Bool		isCon     Args((Cell));
 extern  Cell		openFile  Args((String));
-extern  Void		evalFile  Args((Cell));
+extern  void		evalFile  Args((Cell));
 
 #define isFloat(c)      (isPair(c) && fst(c)==FLOATCELL)
 extern	Cell		mkFloat		Args((FloatPro));
@@ -372,7 +372,7 @@ extern struct Name tabName[];
 
 extern Name newName	 Args((Text));
 extern Name findName	 Args((Text));
-extern Void addPrim	 Args((Int,Name,String,Type));
+extern void addPrim	 Args((Int,Name,String,Type));
 extern Name addPrimCfun  Args((String,Int,Int,Cell));
 
 /* --------------------------------------------------------------------------
@@ -443,7 +443,7 @@ extern Cell	       *tabDict;
 
 extern Class newClass  Args((Text));
 extern Class findClass Args((Text));
-extern Inst  newInst   Args((Void));
+extern Inst  newInst   Args((void));
 extern Idx   newIdx    Args((Cell));
 extern Dict  newDict   Args((Int));
 
@@ -562,16 +562,16 @@ extern	StackPtr     sp;
 #define top()	     stack(sp)
 #define pushed(n)    stack(sp-(n))
 
-extern Void	     stackOverflow Args((Void));
+extern void	     stackOverflow Args((void));
 
 /* --------------------------------------------------------------------------
  * Module control:
  * The implementation of `module' storage is hidden.
  * ------------------------------------------------------------------------*/
 
-extern Module	   startNewModule  Args((Void));
+extern Module	   startNewModule  Args((void));
 extern Bool        nameThisModule  Args((Name));
 extern Module	   moduleThisName  Args((Name));
-extern Void	   dropModulesFrom Args((Module));
+extern void	   dropModulesFrom Args((Module));
 
 /*-------------------------------------------------------------------------*/

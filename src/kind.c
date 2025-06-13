@@ -16,7 +16,7 @@ Bool kindExpert = FALSE;		/* TRUE => display kind errors in  */
  * Kind checking code:
  * ------------------------------------------------------------------------*/
 
-static Void local kindError(l,c,in,wh,k,o)
+static void local kindError(l,c,in,wh,k,o)
 Int    l;				/* line number near constuctor exp */
 Constr c;				/* constructor			   */
 Constr in;				/* context (if any)		   */
@@ -57,7 +57,7 @@ Int    o; {				/* inferred kind (typeIs,typeOff)  */
 static Int  locCVars;			/* offset to local variable kinds  */
 static List unkindTypes;		/* types in need of kind annotation*/
 
-static Void local kindConstr(l,c)	/* Determine kind of constructor   */
+static void local kindConstr(l,c)	/* Determine kind of constructor   */
 Int  l;
 Cell c; {
     Cell h = getHead(c);
@@ -107,7 +107,7 @@ Cell c; {
     return STAR;/* not reached */
 }
 
-static Void local kindPred(line,pred)	/* Check kinds of arguments in pred*/
+static void local kindPred(line,pred)	/* Check kinds of arguments in pred*/
 Int  line;
 Cell pred; {
     static String predicate = "class constraint";
@@ -122,7 +122,7 @@ Cell pred; {
     }
 }
 
-static Void local kindType(line,wh,type)/* check that (poss qualified) type*/
+static void local kindType(line,wh,type)/* check that (poss qualified) type*/
 Int    line;				/* is well-kinded		   */
 String wh;
 Type   type; {
@@ -139,7 +139,7 @@ Type   type; {
     checkKind(line,type,NIL,wh,STAR,0);	/* finally, check type part	   */
 }
 
-static Void local fixKinds() {		/* add kind annotations to types   */
+static void local fixKinds() {		/* add kind annotations to types   */
     for (; nonNull(unkindTypes); unkindTypes=tl(unkindTypes)) {
 	Pair pr   = hd(unkindTypes);
 	if (isSelect(fst(snd(pr)))) {	/* just in case two refs point to a*/
@@ -164,7 +164,7 @@ static Void local fixKinds() {		/* add kind annotations to types   */
  * Kind checking of groups of type constructors and classes:
  * ------------------------------------------------------------------------*/
 
-Void kindTCGroup(tcs)			/* find kinds for mutually rec. gp */
+void kindTCGroup(tcs)			/* find kinds for mutually rec. gp */
 List tcs; {				/* of tycons and classes	   */
     typeChecker(RESET);
     mapProc(initTCKind,tcs);
@@ -174,7 +174,7 @@ List tcs; {				/* of tycons and classes	   */
     typeChecker(RESET);
 }
     
-static Void local initTCKind(c)		/* build initial kind/arity for	c  */
+static void local initTCKind(c)		/* build initial kind/arity for	c  */
 Cell c; {
     if (isTycon(c)) {			/* Initial kind of tycon is:	   */
 	Int beta = newKindvars(1);	/*	 v1 => ... => vn => vn	   */
@@ -195,7 +195,7 @@ Cell c; {
     }
 }
 
-static Void local kindTC(c)		/* check each part of a tycon/class*/
+static void local kindTC(c)		/* check each part of a tycon/class*/
 Cell c; {				/* is well-kinded		   */
     if (isTycon(c)) {
 	static String data = "datatype definition";
@@ -234,7 +234,7 @@ Cell c; {				/* is well-kinded		   */
     }
 }
 
-static Void local genTC(c)		/* generalise kind inferred for	   */
+static void local genTC(c)		/* generalise kind inferred for	   */
 Cell c; {				/* given tycon/class		   */
     if (isTycon(c)) {
 	tycon(c).kind = copyKindvar(intOf(tycon(c).kind));
@@ -282,7 +282,7 @@ Int  o; {
  * Kind checking of instance declaration headers:
  * ------------------------------------------------------------------------*/
 
-Void kindInst(in,freedom)		/* check predicates in instance    */
+void kindInst(in,freedom)		/* check predicates in instance    */
 Inst in;
 Int  freedom; {
     typeChecker(RESET);
@@ -306,7 +306,7 @@ Int  freedom; {
  * Kind checking of individual type signatures:
  * ------------------------------------------------------------------------*/
 
-Void kindSigType(line,type)		/* check that type is well-kinded  */
+void kindSigType(line,type)		/* check that type is well-kinded  */
 Int  line;
 Type type; {
     typeChecker(RESET);
@@ -390,7 +390,7 @@ Int n; {
     return k;
 }
 
-static Void local varKind(n)		/* return (possibly cached) var	   */
+static void local varKind(n)		/* return (possibly cached) var	   */
 Int n; {				/* function kind		   */
     typeOff = newKindvars(n+1);
     if (n>=MAXKINDFUN)

@@ -33,37 +33,37 @@ static  Cell  resps = 0;		/* pointer to list of responses	   */
  * ------------------------------------------------------------------------*/
 
 static Cell   openFile		Args((String));
-static Void   closeFile		Args((Int));
+static void   closeFile		Args((Int));
 
 #if IO_DIALOGUE
-static Void   readFile		Args((Void));
-static Void   writeFile		Args((Void));
-static Void   appendFile	Args((Void));
-static Void   readChan		Args((Void));
-static Void   appendChan	Args((Void));
+static void   readFile		Args((void));
+static void   writeFile		Args((void));
+static void   appendFile	Args((void));
+static void   readChan		Args((void));
+static void   appendChan	Args((void));
 static FILE   *validOutChannel	Args((String));
-static Void   echo		Args((Void));
-static Void   getArgs		Args((Void));
-static Void   getProgName	Args((Void));
-static Void   getEnv		Args((Void));
+static void   echo		Args((void));
+static void   getArgs		Args((void));
+static void   getProgName	Args((void));
+static void   getEnv		Args((void));
 static String evalName		Args((Cell));
 #endif
-static Void   outputString	Args((FILE *,Cell));
+static void   outputString	Args((FILE *,Cell));
 
 #if HASKELL_ARRAYS
-static Void   addAssocs		Args((Cell,Int,Cell));
-static Void   foldAssocs	Args((Cell,Int,Cell,Cell));
+static void   addAssocs		Args((Cell,Int,Cell));
+static void   foldAssocs	Args((Cell,Int,Cell,Cell));
 #endif
 
-static Int    compare		Args((Void));
+static Int    compare		Args((void));
 
-static Void   primInit		Args((Void));
-static Void   primMark		Args((Void));
+static void   primInit		Args((void));
+static void   primMark		Args((void));
 
 static sigProto(onBreak);
 
-static Void   abandon		Args((String));
-static Void   leave		Args((int));
+static void   abandon		Args((String));
+static void   leave		Args((int));
 
 /* --------------------------------------------------------------------------
  * Machine dependent code for Gofer runtime system:
@@ -97,11 +97,11 @@ Cell	 cellStack[NUM_STACK];		/* Storage for cells on stack	   */
 StackPtr sp;				/* stack pointer 		   */
 #endif
 
-Void overflow() {			/* Report stack overflow 	   */
+void overflow() {			/* Report stack overflow 	   */
     abandon("control stack overflow");
 }
 
-Void insufficientArgs() {		/* Report insufficent args on stack*/
+void insufficientArgs() {		/* Report insufficent args on stack*/
     abandon("insufficient arguments on stack");
 }
 
@@ -134,7 +134,7 @@ String s; {				/* input file			   */
 	return cfunNil;
 }
 
-static Void closeFile(n)			/* close input file n	   */
+static void closeFile(n)			/* close input file n	   */
 Int n; {					/* only permitted when the */
     if (0<=n && n<NUM_FILES && infiles[n]) {	/* end of file is read or  */
 	fclose(infiles[n]);			/* when discarded during gc*/
@@ -149,7 +149,7 @@ Int n; {					/* only permitted when the */
 Cell  whnf;				/* head of term in whnf		   */
 Int   whnfInt;				/* whnf term integer value	   */
 
-Void eval(n)				/* Graph reduction evaluator	   */
+void eval(n)				/* Graph reduction evaluator	   */
 register Cell n; {
     StackPtr base = sp;
 
@@ -244,11 +244,11 @@ unw:if (isPair(n)) {
     }
 }
 
-static Void evalString(n)		/* expand STRCELL at node n	   */
+static void evalString(n)		/* expand STRCELL at node n	   */
 Cell n; {
 }
 
-Void fail() {				/* failure to apply supercombinator*/
+void fail() {				/* failure to apply supercombinator*/
     abandon("no applicable equation");
 }
 
@@ -295,7 +295,7 @@ static Bool echoChanged;		/* TRUE => echo changed in dialogue*/
 static Bool stdinUsed;			/* TRUE => ReadChan stdin has been */
 					/*	   seen in dialogue	   */
 
-Void dialogue(prog)			/* carry out dialogue ...	   */
+void dialogue(prog)			/* carry out dialogue ...	   */
 Cell prog; {				/*    :: [Response]->[Request]	   */
 
     echoChanged = FALSE;		/* set status flags		   */
@@ -346,7 +346,7 @@ Cell prog; {				/*    :: [Response]->[Request]	   */
  * File system requests:
  * ------------------------------------------------------------------------*/
 
-static Void readFile() {		/* repond to ReadFile request	   */
+static void readFile() {		/* repond to ReadFile request	   */
     String s = evalName(pushed(0));	/* pushed(0) = file name string	   */
     Cell   f;				/* pushed(1) = rest of program	   */
 
@@ -367,7 +367,7 @@ static Void readFile() {		/* repond to ReadFile request	   */
     }
 }
 
-static Void writeFile() {		/* respond to WriteFile request	   */
+static void writeFile() {		/* respond to WriteFile request	   */
     String s   = evalName(pushed(0));	/* pushed(0) = file name string	   */
     FILE   *fp;				/* pushed(1) = contents		   */
 					/* pushed(2) = rest of program	   */
@@ -386,7 +386,7 @@ static Void writeFile() {		/* respond to WriteFile request	   */
     }
 }
 
-static Void appendFile() {		/* respond to AppendFile request   */
+static void appendFile() {		/* respond to AppendFile request   */
     String s   = evalName(pushed(0));	/* pushed(0) = file name string	   */
     FILE   *fp;				/* pushed(1) = contents		   */
 					/* pushed(2) = rest of program	   */
@@ -417,7 +417,7 @@ static Void appendFile() {		/* respond to AppendFile request   */
 
 static Cell primInput;			/* builtin primitive function	   */
 
-static Void readChan() {                /* respond to ReadChan request	   */
+static void readChan() {                /* respond to ReadChan request	   */
     String s = evalName(pushed(0));	/* pushed(0) = channel name string */
                                         /* pushed(1) = rest of program	   */
 
@@ -471,7 +471,7 @@ static comb3(pr_Fopen)			/* open file for reading as str	   */
 }
 End
 
-static Void appendChan() {		/* respond to AppendChan request   */
+static void appendChan() {		/* respond to AppendChan request   */
     String s    = evalName(pushed(0));	/* pushed(0) = channel name string */
     FILE   *fp;				/* pushed(1) = contents		   */
 					/* pushed(2) = rest of program	   */
@@ -504,7 +504,7 @@ String s; {				/* channel name or 0 otherwise...  */
  * Environment requests:
  * ------------------------------------------------------------------------*/
 
-static Void echo() {			/* respond to Echo request	   */
+static void echo() {			/* respond to Echo request	   */
 					/* pushed(0) = boolean echo status */
 					/* pushed(1) = rest of program	   */
 
@@ -529,7 +529,7 @@ static Void echo() {			/* respond to Echo request	   */
     }
 }
 
-static Void getArgs() {			/* respond to GetArgs request	   */
+static void getArgs() {			/* respond to GetArgs request	   */
     int i = keep_argc;
 
     push(cfunNil);			/* build list of args in reverse   */
@@ -543,7 +543,7 @@ static Void getArgs() {			/* respond to GetArgs request	   */
     topfun(cfunStrList);		/* and add StrList constructor	   */
 }
 
-static Void getProgName() {		/* respond to GetProgName request  */
+static void getProgName() {		/* respond to GetProgName request  */
     if (keep_argc>=1 && keep_argv[0]) {	/* normally, just return argv[0]   */
 	heap(2);
 	pushStr(keep_argv[0]);
@@ -557,7 +557,7 @@ static Void getProgName() {		/* respond to GetProgName request  */
     }
 }
 
-static Void getEnv() {			/* repond to GetEnv request	   */
+static void getEnv() {			/* repond to GetEnv request	   */
     String s = evalName(pushed(0));	/* pushed(0) = variable name str   */
     String r = getenv(s);		/* pushed(1) = rest of program	   */
     if (r) {
@@ -600,7 +600,7 @@ Cell es; {				/* in char array... return ptr to  */
  * Top-level printing mechanism:
  * ------------------------------------------------------------------------*/
 
-static Void outputString(fp,cs)		/* Evaluate string cs and print	   */
+static void outputString(fp,cs)		/* Evaluate string cs and print	   */
 FILE *fp;				/* on specified output stream fp   */
 Cell cs; {
     eval(cs);				/* keep reducing and printing head */
@@ -693,7 +693,7 @@ static comb0(pr_UndefElt)
     ret();/*not reached*/
 End
 
-static Void addAssocs(r,size,arr)	/* add assocs in top() to array arr*/
+static void addAssocs(r,size,arr)	/* add assocs in top() to array arr*/
 Cell r;					/* using r for the range	   */
 Int  size;				/* and with size elements	   */
 Cell arr; {
@@ -719,7 +719,7 @@ Cell arr; {
     }
 }
 
-static Void foldAssocs(r,size,f,arr)	/* fold assocs in top() to array   */
+static void foldAssocs(r,size,f,arr)	/* fold assocs in top() to array   */
 Cell r;					/* using r for the range	   */
 Int  size;				/* and with size elements	   */
 Cell f;					/* and fold function f		   */
@@ -878,7 +878,7 @@ static Cell primSnd;			/* for fst and snd projections	   */
 #define cfunPair   mkCfun(2)
 #define cfunUnit   mkCfun(0)
 
-Void iomonad(prog)			/* execute program in IO monad	   */
+void iomonad(prog)			/* execute program in IO monad	   */
 Cell prog; {
     noechoTerminal();
     heap(1);
@@ -1576,7 +1576,7 @@ Cell primSqrtFloat,  primFloatToInt;
 
 Cell primFopen;				/* read from file primitive	   */
 
-static Void primInit() {		/* initialise primitives	   */
+static void primInit() {		/* initialise primitives	   */
     primFatbar	   = mkSuper(pr_FATBAR);
     primFail	   = mkSuper(pr_FAIL);
     primUndefMem   = mkSuper(pr_UNDEFMEM);
@@ -1667,7 +1667,7 @@ static Void primInit() {		/* initialise primitives	   */
 #endif
 }
 
-static Void primMark() {		/* mark primitives		   */
+static void primMark() {		/* mark primitives		   */
     mark(primFatbar);
     mark(primFail);
     mark(primUndefMem);
@@ -1806,7 +1806,7 @@ static sigHandler(onBreak) {		/* break handler		   */
     sigResume;/*NOTREACHED*/
 }
 
-static Void abandon(why)		/* abort execution of program	   */
+static void abandon(why)		/* abort execution of program	   */
 String why; {
     fputs("\nprogram aborting: ",stderr);
     fputs(why,stderr);
@@ -1814,7 +1814,7 @@ String why; {
     leave(1);
 }
 
-static Void leave(exitcode)		/* tidy up and exit from program   */
+static void leave(exitcode)		/* tidy up and exit from program   */
 int exitcode; {
     normalTerminal();
     exit(exitcode);

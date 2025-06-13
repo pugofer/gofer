@@ -20,8 +20,8 @@
  * ------------------------------------------------------------------------*/
 
 #if PRIMITIVES_CODE
-#define PROTO_PRIM(name)	static Void name Args((StackPtr))
-#define primFun(name)		static Void name(root) StackPtr root;
+#define PROTO_PRIM(name)	static void name Args((StackPtr))
+#define primFun(name)		static void name(root) StackPtr root;
 #define primArg(n)		stack(root+n)
 
 /* IMPORTANT: the second element of an update must be written first.
@@ -112,9 +112,9 @@ PROTO_PRIM(primGenericNe);
 PROTO_PRIM(primPrint);
 PROTO_PRIM(primNPrint);
 
-static Void   local printer		Args((StackPtr,Name,Int,Cell));
-static Void   local startList		Args((StackPtr,Cell));
-static Void   local startNList		Args((StackPtr,Cell));
+static void   local printer		Args((StackPtr,Name,Int,Cell));
+static void   local startList		Args((StackPtr,Cell));
+static void   local startNList		Args((StackPtr,Cell));
 
 PROTO_PRIM(primLPrint);
 PROTO_PRIM(primNLPrint);
@@ -131,17 +131,17 @@ static Cell   local printDBadRedex	Args((Cell,Cell));
 static String local evalName		Args((Cell));
 #endif
 #if IO_DIALOGUE
-static Void   local abandonDialogue	Args((Cell));
-static Cell   local readFile		Args((Void));
-static Cell   local writeFile		Args((Void));
-static Cell   local appendFile		Args((Void));
-static Cell   local readChan		Args((Void));
-static Cell   local appendChan		Args((Void));
+static void   local abandonDialogue	Args((Cell));
+static Cell   local readFile		Args((void));
+static Cell   local writeFile		Args((void));
+static Cell   local appendFile		Args((void));
+static Cell   local readChan		Args((void));
+static Cell   local appendChan		Args((void));
 static FILE  *local validOutChannel	Args((String));
-static Cell   local echo		Args((Void));
-static Cell   local getCLArgs		Args((Void));
-static Cell   local getProgName		Args((Void));
-static Cell   local getEnv		Args((Void));
+static Cell   local echo		Args((void));
+static Cell   local getCLArgs		Args((void));
+static Cell   local getProgName		Args((void));
+static Cell   local getEnv		Args((void));
 static Cell   local outputDString	Args((FILE *));
 
 PROTO_PRIM(primInput);
@@ -1123,7 +1123,7 @@ primFun(primNPrint) {			/* print term without evaluation   */
     printer(root,nameNPrint,d,ss);
 }
 
-static Void local printer(root,pr,d,ss)	/* Main part: primPrint/primNPrint */
+static void local printer(root,pr,d,ss)	/* Main part: primPrint/primNPrint */
 StackPtr root;				/* root or print redex		   */
 Name	 pr;				/* printer to use on components	   */
 Int	 d;				/* precedence level		   */
@@ -1282,7 +1282,7 @@ Cell	 ss; {				/* rest of output		   */
  * List printing primitives:
  * ------------------------------------------------------------------------*/
 
-static Void local startList(root,ss)	/* start printing evaluated list   */
+static void local startList(root,ss)	/* start printing evaluated list   */
 StackPtr root;
 Cell     ss; {
     Cell x    = pushed(0);
@@ -1302,7 +1302,7 @@ Cell     ss; {
 		    lprint(nameLPrint,xs,ss)));
 }
 
-static Void local startNList(root,ss)	/* start printing unevaluated list */
+static void local startNList(root,ss)	/* start printing unevaluated list */
 StackPtr root;
 Cell     ss; {
     Cell x    = pushed(0);
@@ -1450,7 +1450,7 @@ Cell rx, rs; {				/* within a Dialogue, with special */
 	return printBadRedex(rx,rs);
 }
 
-Void abandon(what,rx)			/* abandon computation		   */
+void abandon(what,rx)			/* abandon computation		   */
 String what;
 Cell   rx; {
     outputString(errorStream,
@@ -1510,7 +1510,7 @@ static Bool stdinUsed;			/* TRUE => ReadChan stdin has been */
 					/*	   seen in dialogue	   */
 static FILE *writingFile = 0;		/* points to file open for writing */
 
-Void dialogue(prog)			/* carry out dialogue ...	   */
+void dialogue(prog)			/* carry out dialogue ...	   */
 Cell prog; {				/* :: Dialog=[Response]->[Request] */
     static String ioerr = "Attempt to read response before request complete";
     Cell tooStrict      = mkStr(findText(ioerr));
@@ -1560,7 +1560,7 @@ Cell prog; {				/* :: Dialog=[Response]->[Request] */
     }
 }
 
-static Void local abandonDialogue(rx)	/* abandon dialogue after failure  */
+static void local abandonDialogue(rx)	/* abandon dialogue after failure  */
 Cell rx; {				/* to reduce redex rx		   */
     abandon("Dialogue",rx);
 }
@@ -1815,7 +1815,7 @@ Cell cs; {
  * ------------------------------------------------------------------------*/
 
 #if IO_MONAD
-Void ioExecute(prog)			/* execute IO monad program of type*/
+void ioExecute(prog)			/* execute IO monad program of type*/
 Cell prog; {				/* IO ()			   */
     Cell temp;
     noechoTerminal();
@@ -1980,7 +1980,7 @@ primFun(primSTFreeze) {			/* freeze mutable array		   */
  * ------------------------------------------------------------------------*/
 
 #ifdef LAMBDAVAR
-Void lvExecute(prog)			/* execute lambda var prog of type */
+void lvExecute(prog)			/* execute lambda var prog of type */
 Cell prog; {				/* Proc ()			   */
     Cell temp;
     noechoTerminal();
@@ -2082,7 +2082,7 @@ primFun(primLvSystem) {			/* do system call		   */
  * ------------------------------------------------------------------------*/
 
 #ifdef LAMBDANU
-Void lnExecute(prog)			/* execute lambda nu prog of type  */
+void lnExecute(prog)			/* execute lambda nu prog of type  */
 Cell prog; {				/* Cmd a ()			   */
     Cell temp;
     noechoTerminal();

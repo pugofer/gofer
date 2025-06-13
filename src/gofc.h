@@ -17,11 +17,11 @@
 typedef Int		Cell;			/* general cell value	   */
 typedef Cell far	*Heap;			/* storage of heap	   */
 extern  Int		heapSize;		/* Pairs are stored in the */
-extern  Void		garbageCollect Args((Void));
+extern  void		garbageCollect Args((void));
 
 #if HASKELL_ARRAYS
-extern  Void		allocArray Args((Int,Cell,Cell));
-extern  Void		dupArray   Args((Cell));
+extern  void		allocArray Args((Int,Cell,Cell));
+extern  void		dupArray   Args((Cell));
 #endif
 
 /*- Mark-scan collector ---------------------------------------------------*/
@@ -182,9 +182,9 @@ extern  int argcheck;		/* check for consistency between main	   */
 extern  int		num_scs;		/* supercombinators	   */
 extern  Cell		sc[];
 #if	ARGCHECK
-typedef Void		Super Args((StackPtr));
+typedef void		Super Args((StackPtr));
 #else
-typedef Void		Super Args((Void));
+typedef void		Super Args((void));
 #endif
 extern  Super		*scNames[];
 
@@ -202,13 +202,13 @@ extern  int		dictImps[];
  * ------------------------------------------------------------------------*/
 
 #if     ARGCHECK
-#define defSc(nm,args)	Void nm(root)					   \
+#define defSc(nm,args)	void nm(root)					   \
 			register StackPtr root; {			   \
 			    if (root-sp<=args)				   \
 				insufficientArgs();			   \
 			    root=sp;
 #else
-#define defSc(nm,args)	Void nm() {					   \
+#define defSc(nm,args)	void nm() {					   \
 			    register StackPtr root=sp;
 #endif
 #define Arg		*root = snd(*(root+1)); root++;
@@ -317,22 +317,22 @@ extern Cell primSqrtFloat,  primFloatToInt;
 
 /*- runtime support functions and variables -------------------------------*/
 
-typedef Void (*TopLevel)        Args((Cell));
+typedef void (*TopLevel)        Args((Cell));
 extern  TopLevel topLevel;
 #if IO_DIALOGUE
-extern  Void dialogue		Args((Cell));
+extern  void dialogue		Args((Cell));
 #endif
 #if IO_MONAD
-extern  Void iomonad		Args((Cell));
+extern  void iomonad		Args((Cell));
 #endif
 
-extern Void eval		Args((Cell));
-extern Void overflow		Args((Void));
-extern Void insufficientArgs	Args((Void));
-extern Void fail		Args((Void));
+extern void eval		Args((Cell));
+extern void overflow		Args((void));
+extern void insufficientArgs	Args((void));
+extern void fail		Args((void));
 extern Cell rootFst		Args((Cell));
-extern Int  readTerminalChar	Args((Void));
-extern Void noechoTerminal	Args((Void));
-extern Void normalTerminal	Args((Void));
+extern Int  readTerminalChar	Args((void));
+extern void noechoTerminal	Args((void));
+extern void normalTerminal	Args((void));
 
 /* ----------------------------------------------------------------------- */

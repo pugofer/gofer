@@ -18,19 +18,19 @@
 #define ERRKIND(k)	 printKind(errorStream,k)
 #define ERRSIG(sig)	 printSig(errorStream,sig)
 
-extern Void errHead      Args((Int));              /* in main.c            */
-extern Void errFail      Args((Void));
-extern Void errAbort	 Args((Void));
+extern void errHead      Args((Int));              /* in main.c            */
+extern void errFail      Args((void));
+extern void errAbort	 Args((void));
 
 extern sigProto(breakHandler);
 
 extern Bool breakOn      Args((Bool));		   /* in machdep.c	   */
 
-extern Void printExp     Args((FILE *,Cell));      /* in output.c          */
-extern Void printType    Args((FILE *,Cell));
-extern Void printContext Args((FILE *,List));
-extern Void printPred    Args((FILE *,Cell));
-extern Void printKind	 Args((FILE *,Kind));
-extern Void printSig	 Args((FILE *,Cell));
+extern void printExp     Args((FILE *,Cell));      /* in output.c          */
+extern void printType    Args((FILE *,Cell));
+extern void printContext Args((FILE *,List));
+extern void printPred    Args((FILE *,Cell));
+extern void printKind	 Args((FILE *,Kind));
+extern void printSig	 Args((FILE *,Cell));
 
 /*-------------------------------------------------------------------------*/
