@@ -25,7 +25,7 @@
 
 // The old hand edited mode of choosing OSes is superseded by using
 // predefined compiler macros.
-// As of now thats: __linux__, __WIN32.
+// As of now thats: __linux__, _WIN32.
 // NETBSD is WIP for MACOS
 
 #if 0
@@ -88,17 +88,15 @@
  *   FIXED_SUBST    to force a fixed size for the current substitution
  *-------------------------------------------------------------------------*/
 
-#define UNIX		(SUNOS  | NEXTSTEP | HPUX | NEXTGCC | __linux__ | AMIGA | \
-			 MINIX68K | ALPHA | OS2 | SVR4 | ULTRIX | AIX | MIPS |\
-			 SGI4 | NETBSD)
+#define UNIX		(__linux__ | NETBSD)
 #define SMALL_GOFER	(TURBOC | BCC)
-#define REGULAR_GOFER	(RISCOS | DJGPP | ZTC | ATARI)
-#define LARGE_GOFER	(UNIX   | WATCOM | _WIN32)
-#define JMPBUF_ARRAY	(UNIX   | DJGPP | RISCOS | ZTC | ATARI)
-#define DOS_IO		(TURBOC | BCC | DJGPP | ZTC | WATCOM | ATARI | _WIN32)
-#define TERMIO_IO	(__linux__  | HPUX | OS2 | SVR4 | SGI4)
-#define SGTTY_IO	(SUNOS  | NEXTSTEP | NEXTGCC | AMIGA | MINIX68K | \
-			 ALPHA  | ULTRIX | AIX | MIPS)
+#define REGULAR_GOFER	0   // (RISCOS | DJGPP | ZTC | ATARI)
+#define LARGE_GOFER	(UNIX  | _WIN32)
+#define JMPBUF_ARRAY	(UNIX)
+#define DOS_IO		(TURBOC | BCC | _WIN32)
+#define TERMIO_IO	(__linux__ )
+#define SGTTY_IO	0  //(SUNOS  | NEXTSTEP | NEXTGCC | AMIGA | MINIX68K | \
+			   //  ALPHA  | ULTRIX | AIX | MIPS)
 #define TERMIOS_IO      (NETBSD)
 #define BREAK_FLOATS	(TURBOC | BCC)
 #define HAS_FLOATS	(REGULAR_GOFER | LARGE_GOFER | BREAK_FLOATS)
@@ -201,52 +199,6 @@ extern  int  kbhit	Args((void));
 #define sigResume	return 1
 #endif
 
-#if     SUNOS
-#include <malloc.h>
-#define far
-#define farCalloc(n,s)	(Void *)valloc(((unsigned)n)*((unsigned)s))
-#endif
-
-#if     MIPS
-#define far
-#define farCalloc(n,s)	(Void *)valloc(((unsigned)n)*((unsigned)s))
-#endif
-
-#if     (NEXTSTEP | NEXTGCC | MINIX68K | ULTRIX)
-#include <stdlib.h>
-#define far
-#define farCalloc(n,s)	(Void *)valloc(((unsigned)n)*((unsigned)s))
-#endif
-
-#if     AMIGA
-#include <stdlib.h>
-#define	Main		int
-#define	far
-#define	farCalloc(n,s)	(Void *)valloc(((unsigned)n)*((unsigned)s))
-#endif
-
-#if     (HPUX | DJGPP | ZTC | __linux__ | ALPHA | OS2 | SVR4 | AIX | SGI4 | NETBSD)
-#include <stdlib.h>
-#define  far
-#endif
-
-#if	WATCOM
-#include <stdlib.h>
-#undef   far
-#define  far
-#endif
-
-#if	RISCOS
-#include <string.h>
-#include <stdlib.h>
-#include <signal.h>
-#define  far
-#define  isascii(c)	(((unsigned)(c))<128)
-#define  Main		int
-#define  MainDone	return 0;/*NOTUSED*/
-extern   int access	Args((char *, int));
-extern   int namecmp    Args((char *, char *));
-#endif
 
 #ifndef USE_READLINE
 #define USE_READLINE  0
@@ -279,7 +231,7 @@ extern   int namecmp    Args((char *, char *));
 #define MainDone
 #endif
 
-#if (UNIX | DJGPP | RISCOS | ZTC | WATCOM | ATARI | _WIN32)
+#if (UNIX | _WIN32)
 #define ctrlbrk(bh)	   signal(SIGINT,bh)
 #endif
 
@@ -298,11 +250,7 @@ typedef int      Char;
 typedef unsigned Unsigned;
 
 #ifndef STD_PRELUDE
-#if     RISCOS
-#define STD_PRELUDE	   "prelude"
-#else
 #define STD_PRELUDE	   "standard.prelude"
-#endif
 #endif
 
 #define NUM_SYNTAX         100
@@ -355,21 +303,6 @@ typedef unsigned Unsigned;
 #define placeInSet(n)      ((-(n)-1)>>wordShift)
 #define maskInSet(n)       (1<<((-(n)-1)&wordMask))
 
-#ifndef __GNUC__
-#if !RISCOS
-extern Int      strcmp     Args((String, String));
-extern Int      strlen     Args((String));
-extern char	*strcpy	   Args((String,String));
-extern char     *strcat	   Args((String,String));
-#endif
-#endif
-#if !__linux__
-extern char	*getenv	   Args((char *));
-extern int      system	   Args((const char *));
-extern double   atof	   Args((char *));
-#endif
-extern char     *strchr    Args((char *,int));  /* test membership in str  */
-extern Void     exit       Args((int));
 extern Void     internal   Args((String));
 extern Void     fatal	   Args((String));
 

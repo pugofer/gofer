@@ -29,38 +29,6 @@
 extern unsigned _stklen = 8000;		/* Allocate an 8k stack segment	   */
 #endif
 
-#if (ZTC | WATCOM)
-#include <stdlib.h>
-#include <signal.h>
-#include <fcntl.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#endif
-
-#if DJGPP
-#include <dos.h>
-#include <stdlib.h>
-#include <std.h>
-#include <signal.h>
-#include <fcntl.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#endif
-
-#if RISCOS
-#include <assert.h>
-#include <signal.h>
-#include "swis.h"
-#include "os.h"
-#endif
-
-#if ATARI
-#include <signal.h>
-#include <fcntl.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#endif
-
 /* --------------------------------------------------------------------------
  * Machine dependent code is used in each of:
  *	- The gofer interpreter		MACHDEP_GOFER
@@ -89,15 +57,9 @@ extern unsigned _stklen = 8000;		/* Allocate an 8k stack segment	   */
  * ------------------------------------------------------------------------*/
 
 #if (MACHDEP_GOFER | MACHDEP_GOFC)
-#if RISCOS
-typedef struct { unsigned hi, lo; } Time;
-#define timeChanged(now,thn)	(now.hi!=thn.hi || now.lo!=thn.lo)
-#define timeSet(var,tm)		var.hi = tm.hi; var.lo = tm.lo
-#else
 typedef time_t Time;
 #define timeChanged(now,thn)	(now!=thn)
 #define timeSet(var,tm)		var = tm
-#endif
 
 static Void local getFileInfo	Args((String, Time *, Long *));
 
@@ -105,46 +67,13 @@ static Void local getFileInfo(s,tm,sz)	/* find time stamp and size of file*/
 String s;
 Time   *tm;
 Long   *sz; {
-#if RISCOS				/* get file info for RISCOS -- JBS */
-    os_regset r;			/* RISCOS PRM p.850 and p.837	   */
-    r.r[0] = 17;			/* Read catalogue, no path	   */
-    r.r[1] = (int)s;
-    os_swi(OS_File, &r);
-    if(r.r[0] == 1 && (r.r[2] & 0xFFF00000) == 0xFFF00000) {
-	tm->hi = r.r[2] & 0xFF;		/* Load address (high byte)	   */
-	tm->lo = r.r[3];		/* Execution address (low 4 bytes) */
-    }
-    else				/* Not found, or not time-stamped  */
-	tm->hi = tm->lo = 0;
-    *sz = (Long)(r.r[0] == 1 ? r.r[4] : 0);
-#else					/* normally just use stat()	   */
     static struct stat scbuf;
     stat(s,&scbuf);
     *tm = scbuf.st_mtime;
     *sz = (Long)(scbuf.st_size);
-#endif
 }
 #endif
 
-#if RISCOS				/* RISCOS needs access()	   */
-int access(char *s, int dummy) {	/* Give 1 iff cannot access file s */
-    os_regset r;			/* RISCOS PRM p.850	-- JBS	   */
-    assert(dummy == 0);
-    r.r[0] = 17; /* Read catalogue, no path */
-    r.r[1] = (int)s;
-    os_swi(OS_File, &r);
-    return r.r[0] != 1;
-}
-
-int namecmp(char *filename, char *spec){/* For filename extension hacks	   */
-    while(*spec)
-        if  (tolower(*filename) != *spec++)
-	    return 0;
-	else
-	    ++filename;
-    return *filename == '.';
-}
-#endif
 
 /* --------------------------------------------------------------------------
  * Get time/date stamp for inclusion in compiled files:
@@ -190,64 +119,6 @@ Int recovered; {
 
 Cell *CStackBase;			/* Retain start of C control stack */
 
-#if RISCOS				/* Stack traversal for RISCOS	   */
-
-/* Warning: The following code is specific to the Acorn ARM under RISCOS
-   (and C4).  We must explicitly walk back through the stack frames, since
-   the stack is extended from the heap. (see PRM pp. 1757).  gcCStack must
-   not be modified, since the offset '5' assumes that only v1 is used inside
-   this function. Hence we do all the real work in gcARM.
-*/
-		  
-#define spreg 13 /* C3 has SP=R13 */
-
-#define previousFrame(fp)	((int *)((fp)[-3]))
-#define programCounter(fp)	((int *)((*(fp)-12) & ~0xFC000003))
-#define isSubSPSP(w)		(((w)&dontCare) == doCare)
-#define doCare			(0xE24DD000)  /* SUB r13,r13,#0 */
-#define dontCare		(~0x00100FFF) /* S and # bits   */
-#define immediateArg(x)		( ((x)&0xFF) << (((x)&0xF00)>>7) )
-
-static void gcARM(int *fp) {
-    int si = *programCounter(fp);	/* Save instruction indicates how */
-					/* many registers in this frame   */
-    int *regs = fp - 4;
-    if (si & (1<<0)) markWithoutMove(*regs--);
-    if (si & (1<<1)) markWithoutMove(*regs--);
-    if (si & (1<<2)) markWithoutMove(*regs--);
-    if (si & (1<<3)) markWithoutMove(*regs--);
-    if (si & (1<<4)) markWithoutMove(*regs--);
-    if (si & (1<<5)) markWithoutMove(*regs--);
-    if (si & (1<<6)) markWithoutMove(*regs--);
-    if (si & (1<<7)) markWithoutMove(*regs--);
-    if (si & (1<<8)) markWithoutMove(*regs--);
-    if (si & (1<<9)) markWithoutMove(*regs--);
-    if (previousFrame(fp)) {
-	/* The non-register stack space is for the previous frame is above
-	   this fp, and not below the previous fp, because of the way stack
-	   extension works. It seems the only way of discovering its size is
-	   finding the SUB sp, sp, #? instruction by walking through the code
-	   following the entry point.
-	*/
-	int *oldpc = programCounter(previousFrame(fp));
-	int fsize = 0, i;
-	for(i = 1; i < 6; ++i)
-	    if(isSubSPSP(oldpc[i])) fsize += immediateArg(oldpc[i]) / 4;
-	for(i=1; i<=fsize; ++i)
-	    markWithoutMove(fp[i]);
-    }
-}
-
-void gcCStack() {
-    int dummy;
-    int *fp = 5 + &dummy;
-    while (fp) {
-	gcARM(fp);
-	fp = previousFrame(fp);
-    }
-}
-
-#else			/* Garbage collection for standard stack machines  */
 
 Void gcCStack() {			/* Garbage collect elements off    */
     Cell stackTop = NIL;		/* C stack			   */
@@ -266,16 +137,11 @@ Void gcCStack() {			/* Garbage collect elements off    */
 #define StackGrowsDown	while (ptr<=CStackBase) markWithoutMove(*ptr++)
 #define StackGrowsUp	while (ptr>=CStackBase) markWithoutMove(*ptr--)
 #define GuessDirection	if (ptr>CStackBase) StackGrowsUp; else StackGrowsDown
-#if HPUX
-    GuessDirection;
-#else
     StackGrowsDown;
-#endif
 #undef  StackGrowsDown
 #undef  StackGrowsUp
 #undef  GuessDirection
 }
-#endif
 #endif
 
 /* --------------------------------------------------------------------------
@@ -299,11 +165,7 @@ typedef  struct termio   TermParams;
 typedef  struct sgttyb   TermParams;
 #define  getTerminal(tp) ioctl(fileno(stdin),TIOCGETP,&tp)
 #define  setTerminal(tp) ioctl(fileno(stdin),TIOCSETP,&tp)
-#if HPUX
-#define  noEcho(tp)      tp.sg_flags |= RAW; tp.sg_flags &= (~ECHO);
-#else
 #define  noEcho(tp)      tp.sg_flags |= CBREAK; tp.sg_flags &= (~ECHO);
-#endif
 #endif
 
 #if TERMIOS_IO
@@ -384,25 +246,6 @@ Int readTerminalChar() {		/* read character from terminal	   */
 }
 #endif
 
-#if RISCOS
-#if (MACHDEP_GOFER | MACHDEP_GOFC)
-Int getTerminalWidth() {
-    int dummy, width;
-    (void) os_swi3r(OS_ReadModeVariable, -1, 1, 0, &dummy, &dummy, &width);
-    return width+1;
-}
-#endif
-
-Void normalTerminal() {			/* restore terminal initial state  */
-}					/* (not yet implemented)	   */
-
-Void noechoTerminal() {			/* turn terminal echo on/off	   */
-}					/* (not yet implemented)	   */
-
-Int readTerminalChar() {		/* read character from terminal	   */
-    return getchar();
-}
-#endif
 
 /* --------------------------------------------------------------------------
  * Interrupt handling:
@@ -452,11 +295,6 @@ String s; {
     return system(s);
 }
 
-#if RISCOS				/* RISCOS also needs a chdir()	   */
-int chdir(char *s) {			/* RISCOS PRM p. 885	-- JBS	   */
-    return os_swi2(OS_FSControl + XOS_Bit, 0, (int)s) != NULL;
-}
-#endif
 #endif
 
 /* --------------------------------------------------------------------------
@@ -602,33 +440,32 @@ static sigHandler(panic) {		/* exit in a panic, on receipt of  */
 }
 #endif
 
-Void machdep(what)			/* Handle machine specific	   */
-Int what; {				/* initialisation etc..		   */
+Void machdep(Int what) {
     switch (what) {
-        case MARK    : break;
+        case MARK:
+            break;
+
 #if UNIX
-        case INSTALL :
-#ifdef SIGHUP
-		       signal(SIGHUP,panic);
+        case INSTALL:
+            signal(SIGHUP,  panic);
+            signal(SIGQUIT, panic);
+            signal(SIGTERM, panic);
+            signal(SIGSEGV, panic);
+            signal(SIGBUS,  panic);
+            break;
 #endif
-#ifdef SIGQUIT
-		       signal(SIGQUIT,panic);
+
+#if (_WIN32)
+        case INSTALL:
+            /* Windows: optional handling via SetConsoleCtrlHandler */
+            break;
 #endif
-#ifdef SIGTERM
-		       signal(SIGTERM,panic);
-#endif
-#ifdef SIGSEGV
-		       signal(SIGSEGV,panic);
-#endif
-#ifdef SIGBUS
-		       signal(SIGBUS,panic);
-#endif
-		       break;
-#endif
-        case RESET   :
-	case BREAK   :
-	case EXIT    : normalTerminal();
-		       break;
+
+        case RESET:
+        case BREAK:
+        case EXIT:
+            normalTerminal();
+            break;
     }
 }
 #endif
